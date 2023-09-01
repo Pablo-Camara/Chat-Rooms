@@ -13,7 +13,9 @@ I have created an MVP / Prototype / whatever you call it, in Sketch,
 and I have created the views below that I will be implementing..
 Inside those views I will have different reusable components with different states that will make up the views.
 
-You can check screenshot images below:
+You can check screenshot images below,
+but during the development process I will probably change/improve
+the design in one way or another in certain areas/components:
 
 - Login
 
