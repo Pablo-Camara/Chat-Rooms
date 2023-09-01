@@ -13,6 +13,7 @@ export default function Button({style, onClick, children}) {
             text-align: center;
             height: 35px;
             line-height: 35px;
+            cursor: pointer;
           }
         `}
         </style>
