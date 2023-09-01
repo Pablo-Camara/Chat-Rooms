@@ -1,20 +1,10 @@
 import Button from "./Button";
 import Container from "./Container";
 import Text from "./Text";
-
+import styles from '../../css/modules/components/UserListItem.module.css';
 export default function UserListItem({style, user}) {
     return <>
-        <style>
-        {`
-          /* Scoped styles */
-          .box-item {
-            background: #FFFFFF;
-            border: 1px solid #979797;
-            padding: 14px;
-          }
-        `}
-        </style>
-        <div className="box-item" style={{...style}}>
+        <div className={styles.boxItem} style={{...style}}>
             <Text style={{
                 textAlign: 'left',
                 color: '#1D398F',
