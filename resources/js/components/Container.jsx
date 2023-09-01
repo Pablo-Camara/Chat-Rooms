@@ -4,7 +4,7 @@ export default function Container({style, children}) {
         {`
           /* Scoped styles */
           .container {
-            width: 280px;
+            max-width: 280px;
             margin: auto;
           }
         `}

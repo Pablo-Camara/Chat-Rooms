@@ -6,9 +6,10 @@ import Header from "../components/Header";
 import LinkedButton from "../components/LinkedButton";
 import Button from "../components/Button";
 import Text from "../components/Text";
+import UserListItem from "../components/UserListItem";
 
 const MainMenuPage = () => {
-  const { isLoggedIn, logout } = useContext(AuthContext);
+  const { isLoggedIn, logout, getFriends } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +27,8 @@ const MainMenuPage = () => {
         navigate('/login');
     })
   };
+
+  const friends = getFriends();
 
   return <>
     <Container>
@@ -69,13 +72,32 @@ const MainMenuPage = () => {
             style={{
                 fontSize: '24px',
                 color: '#1B1F50'
-            }}>My friends (0)</Header>
+            }}>My friends ({friends.length})</Header>
 
-        <Text style={{
-            marginTop: '13px'
-        }}>
-            You haven’t added any friends yet
-        </Text>
+        {
+            friends.length == 0
+            &&
+            <Text style={{
+                marginTop: '13px'
+            }}>
+                You haven’t added any friends yet
+            </Text>
+        }
+
+        {
+            friends.length > 0
+            &&
+            <>
+                {
+                    friends.map((user, index) => (
+                        <UserListItem user={user}
+                            style={{
+                                marginTop: '18px'
+                            }}/>
+                    ))
+                }
+            </>
+        }
 
     </Container>
   </>;
