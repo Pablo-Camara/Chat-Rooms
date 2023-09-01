@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
 import Container from "../components/Container";
@@ -9,13 +9,18 @@ import Text from "../components/Text";
 import UserListItem from "../components/UserListItem";
 
 const MainMenuPage = () => {
-  const { isLoggedIn, logout, getFriends } = useContext(AuthContext);
+  const { isLoggedIn, authToken, logout } = useContext(AuthContext);
+  const [ friends, setFriends ] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLoggedIn) {
         navigate('/login');
+        return;
     }
+    alert(authToken);
+    // will use authToken to request friends list
+
   }, [isLoggedIn]);
 
   if (!isLoggedIn) {
@@ -28,7 +33,6 @@ const MainMenuPage = () => {
     })
   };
 
-  const friends = getFriends();
 
   return <>
     <Container>

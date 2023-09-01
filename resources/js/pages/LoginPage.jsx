@@ -13,7 +13,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const loginAttempt = () => {
-    login(() => {
+    login('pc', '1234',() => {
         navigate('/');
     });
   };
