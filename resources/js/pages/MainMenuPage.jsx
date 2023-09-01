@@ -3,7 +3,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
 import Container from "../components/Container";
 import Header from "../components/Header";
-import LinkedButton from "../components/LinkedButton";
+import LinkButton from "../components/LinkButton";
 import Button from "../components/Button";
 import Text from "../components/Text";
 import UserListItem from "../components/UserListItem";
@@ -36,20 +36,22 @@ const MainMenuPage = () => {
         <Container style={{
             marginTop: '20px'
         }}>
-            <LinkedButton
+            <LinkButton
                 style={{
                     float: 'left'
                 }}
             >
                 My Account / Profile
-            </LinkedButton>
-            <LinkedButton
+            </LinkButton>
+            <LinkButton
                 style={{
                     float: 'right',
                     color: '#FF0000'
                 }}
                 onClick={() => logoutAttempt()}
-                >Logout</LinkedButton>
+                >
+                    Logout
+            </LinkButton>
 
             <div style={{
                 clear: 'both'
