@@ -8,35 +8,53 @@ import Button from "../components/Button";
 import HorizontalSeparator from "../components/HorizontalSeparator";
 import { useNavigate } from "react-router";
 
-const LoginPage = () => {
-  const { login } = useContext(AuthContext);
+const RegisterPage = () => {
+  const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const loginAttempt = () => {
-    login(() => {
+  const registerAttempt = () => {
+    register(() => {
         navigate('/');
     });
   };
 
-  const showRegisterForm = () => {
-    navigate('/register');
+  const showLoginForm = () => {
+    navigate('/login');
   };
 
   return <>
         <Container>
-            <Header type="h1">Login</Header>
+            <Header type="h1">Create an account</Header>
 
-            <TextBoxLabel>Username:</TextBoxLabel>
+            <TextBoxLabel>First name:</TextBoxLabel>
             <TextBox />
 
             <TextBoxLabel
                 style={{
                     marginTop: '15px'
-                }}>Password:</TextBoxLabel>
+                }}>Last name:</TextBoxLabel>
+            <TextBox />
+
+            <TextBoxLabel
+                style={{
+                    marginTop: '15px'
+                }}>Create an Username:</TextBoxLabel>
+            <TextBox />
+
+            <TextBoxLabel
+                style={{
+                    marginTop: '15px'
+                }}>Create a password:</TextBoxLabel>
+            <TextBox />
+
+            <TextBoxLabel
+                style={{
+                    marginTop: '15px'
+                }}>Type your password again:</TextBoxLabel>
             <TextBox />
 
             <Button
-                onClick={() => loginAttempt()}
+                onClick={() => registerAttempt()}
                 style={{
                     marginTop: '16px'
                 }}>Continue</Button>
@@ -55,15 +73,16 @@ const LoginPage = () => {
                 style={{
                     marginTop: '30px'
                 }}>
-                If you don’t have an account yet, then you can:
+                If you already have created an account then you can go to the:
             </Header>
             <Button
-                onClick={showRegisterForm}
+                onClick={showLoginForm}
                 style={{
                     marginTop: '15px'
-                }}>Create an account</Button>
+                }}>Login page</Button>
         </Container>
+
     </>;
 };
 
-export default LoginPage;
+export default RegisterPage;
