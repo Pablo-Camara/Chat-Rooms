@@ -1,0 +1,18 @@
+h1.defaultHeader, h2.defaultHeader {
+    font-weight: normal;
+}
+
+
+h1.defaultHeader {
+    font-family: Verdana;
+    font-size: 20px;
+    color: #000000;
+    text-align: center;
+}
+
+h2.defaultHeader {
+    font-family: Verdana;
+    font-size: 20px;
+    color: #000000;
+    text-align: center;
+}
