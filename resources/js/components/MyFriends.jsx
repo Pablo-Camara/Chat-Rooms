@@ -79,7 +79,7 @@ export default function MyFriends () {
             friends.length > 0
             &&
             friends.map((user, index) => (
-                <UserListItem user={user}
+                <UserListItem key={'user_list_item_' + index} user={user}
                     style={{
                         marginTop: '18px'
                     }}/>
