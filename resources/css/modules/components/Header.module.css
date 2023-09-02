@@ -18,6 +18,12 @@ h2.defaultHeader {
 }
 
 
-.chatRoomHeader {
+
+h1.chatRoomHeader,
+h2.chatRoomHeader {
     margin-top: 12px;
+    font-family: Verdana;
+    font-size: 24px;
+    color: #1B1F50;
+    text-align: 'center';
 }
