@@ -7,19 +7,33 @@ export const AuthContextProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [authToken, setAuthToken] = useState(null);
 
-    const login = async (username, password, callback) => {
-        const response = await axios.post('/api/login', {
-            username,
-            password
-        });
+    const login = async (
+        username, password,
+        successCallback, failCallback
+    ) => {
+        let response;
+        try {
+            response = await axios.post('/api/login', {
+                username,
+                password
+            });
+        } catch (error) {
+            if (typeof failCallback === 'function') {
+                failCallback();
+            }
+            return;
+        }
 
         if (response.status === 200) {
             setIsLoggedIn(true);
             setAuthToken(response.data.token);
-            if (typeof callback === 'function') {
-                callback();
+            if (typeof successCallback === 'function') {
+                successCallback();
             }
         } else {
+            if (typeof failCallback === 'function') {
+                failCallback();
+            }
             throw new Error(response.message);
         }
     };

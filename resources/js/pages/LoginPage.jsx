@@ -7,18 +7,27 @@ import TextBox from "../components/TextBox";
 import Button from "../components/Button";
 import HorizontalSeparator from "../components/HorizontalSeparator";
 import { useNavigate } from "react-router";
+import Text from "../components/Text";
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
   const [ username, setUsername ] = useState('');
   const [ password, setPassword ] = useState('');
+  const [ hasLoginError, setHasLoginError ] = useState(false);
 
   const navigate = useNavigate();
 
   const loginAttempt = () => {
-    login(username, password,() => {
-        navigate('/');
-    });
+    setHasLoginError(false);
+    login(
+        username, password,
+        () => {
+            navigate('/');
+        },
+        () => {
+            setHasLoginError(true);
+        }
+    );
   };
 
   const showRegisterForm = () => {
@@ -39,6 +48,16 @@ const LoginPage = () => {
             <TextBox type="password"
                 value={password}
                 setTextFunc={setPassword}/>
+
+            {
+                hasLoginError
+                &&
+                <Text style={{
+                    color: 'red'
+                }}>
+                    Login was not successful
+                </Text>
+            }
 
             <Button
                 onClick={() => loginAttempt()}
