@@ -6,6 +6,8 @@ import Header from "../components/Header";
 import LinkButton from "../components/LinkButton";
 import Button from "../components/Button";
 import MyFriends from "../components/MyFriends";
+import linkBtnStyles from '../../css/modules/components/LinkButton.module.css';
+
 
 const MainMenuPage = () => {
   const { isLoggedIn, logout } = useContext(AuthContext);
@@ -32,17 +34,12 @@ const MainMenuPage = () => {
             marginTop: '20px'
         }}>
             <LinkButton
-                style={{
-                    float: 'left'
-                }}
+                className={`${linkBtnStyles.linkButton} ${linkBtnStyles.myAccountLink}`}
             >
                 My Account / Profile
             </LinkButton>
             <LinkButton
-                style={{
-                    float: 'right',
-                    color: '#FF0000'
-                }}
+                className={`${linkBtnStyles.linkButton} ${linkBtnStyles.logoutLink}`}
                 onClick={() => logoutAttempt()}
                 >
                     Logout

@@ -16,3 +16,13 @@
     text-align: center;
     margin-top: 18px;
 }
+
+
+.logoutLink {
+    float: right;
+    color: #FF0000;
+}
+
+.myAccountLink {
+    float: left;
+}
