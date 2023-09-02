@@ -23,4 +23,5 @@
 .sendMessageTextarea {
     padding-top: 8px;
     height: 63px;
+    box-sizing: border-box;
 }

@@ -13,6 +13,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import HorizontalSeparator from "../components/HorizontalSeparator";
 import UserName from "../components/UserName";
 import TextArea from "../components/TextArea";
+import Button from "../components/Button";
 
 const ChatRoomPage = () => {
     const location = useLocation();
@@ -111,6 +112,19 @@ const ChatRoomPage = () => {
                 defaultValue={currentMessage}
                 setTextFunc={setCurrentMessage} />
 
+            <Container style={{
+                marginTop: '6px',
+                textAlign: 'right'
+            }}>
+                <Button
+                    onClick={() => alert('test')}
+                    style={{
+                        width: '73px',
+                        display: 'inline-block',
+                        fontSize: '14px',
+                        marginLeft: '14px'
+                    }}>Send</Button>
+            </Container>
         </Container>
     </>
 };
