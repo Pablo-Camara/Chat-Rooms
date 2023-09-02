@@ -5,6 +5,9 @@
 - composer package "beyondcode/laravel-websockets" for server side websockets
 - npm package "laravel-echo" for client side of websockets
 
+## Destination URL && Development environment URL
+https://chat.camara.pt/
+
 ## About "Chat Rooms" (this web app)
 
 I'm creating this project mainly as portfolio and as a way of exploring certain technologies and refreshing my mind with some content for later use in a professional environment.
