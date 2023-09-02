@@ -30,7 +30,7 @@ export default function UserListItem({style, user}) {
                         width: '120px',
                         display: 'inline-block',
                         fontSize: '14px'
-                    }}>Send message</Button>
+                    }}>Open chat</Button>
 
                 <Button
                     onClick={() => alert('test')}
