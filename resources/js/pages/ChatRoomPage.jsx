@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import headerStyles from '../../css/modules/components/Header.module.css';
 import txtStyles from '../../css/modules/components/Text.module.css';
 import txtBoxStyles from '../../css/modules/components/TextBox.module.css';
+import containerStyles from '../../css/modules/components/Container.module.css';
 import Text from "../components/Text";
 import { AuthContext } from "../contexts/AuthContext";
 import HorizontalSeparator from "../components/HorizontalSeparator";
@@ -33,6 +34,13 @@ const ChatRoomPage = () => {
     const [ destinationUser, setDestinationUser ] = useState(null);
 
     const [ currentMessage, setCurrentMessage ] = useState('');
+    const [ chatMessages, setChatMessages ] = useState([
+        {
+            username: 'pablocamara1996',
+            message: 'Hello',
+            dateSent: 'Tue 29 Aug 2023 17:18:12'
+        }
+    ]);
 
     isPrivateChat && useEffect(() => {
         // fetch friends
@@ -87,15 +95,79 @@ const ChatRoomPage = () => {
             }
 
             <HorizontalSeparator style={{
-                marginTop: '16px'
+                marginTop: '16px',
+                marginBottom: '10px'
             }}/>
 
-            <Text style={{
-                color: 'gray',
-                padding: '10px 0'
-            }}>
-                This chat is empty
-            </Text>
+            {
+                chatMessages.length == 0
+                &&
+                <Text style={{
+                    color: 'gray'
+                }}>
+                    This chat is empty
+                </Text>
+            }
+
+            {
+                chatMessages.length > 0
+                &&
+                <>
+                    {
+                        chatMessages.map((chatMessage, index) => {
+                            return <Container className={containerStyles.msgContainer}>
+                                <div style={{
+                                    textAlign: 'left'
+                                }}>
+                                    <UserName user={
+                                        {
+                                            username: chatMessage.username
+                                        }
+                                    }
+                                        style={{
+                                            display: 'inline-block'
+                                        }}/> says:
+
+                                    <div style={{
+                                        float: 'right',
+                                        marginTop: '6px'
+                                    }}>
+                                        <div style={{
+                                            background: '#D8D8D8',
+                                            border: '1px solid #979797',
+                                            height: '8px',
+                                            width: '8px',
+                                            display: 'inline-block',
+                                            marginRight: '2px'
+                                        }}></div>
+                                        <div style={{
+                                            background: '#D8D8D8',
+                                            border: '1px solid #979797',
+                                            height: '8px',
+                                            width: '8px',
+                                            display: 'inline-block',
+                                            marginRight: '2px'
+                                        }}></div>
+                                        <div style={{
+                                            background: '#D8D8D8',
+                                            border: '1px solid #979797',
+                                            height: '8px',
+                                            width: '8px',
+                                            display: 'inline-block'
+                                        }}></div>
+                                    </div>
+                                </div>
+                                <Text className={containerStyles.msgTextContainer}>
+                                    {chatMessage.message}
+                                </Text>
+                                <Text className={containerStyles.msgDateSentContainer}>
+                                    {chatMessage.dateSent}
+                                </Text>
+                            </Container>
+                        })
+                    }
+                </>
+            }
 
             <HorizontalSeparator style={{
                 marginTop: '26px'
