@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import Header from "../components/Header";
 import Container from "../components/Container";
@@ -10,10 +10,13 @@ import { useNavigate } from "react-router";
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
+  const [ username, setUsername ] = useState('');
+  const [ password, setPassword ] = useState('');
+
   const navigate = useNavigate();
 
   const loginAttempt = () => {
-    login('pc', '1234',() => {
+    login(username, password,() => {
         navigate('/');
     });
   };
@@ -26,14 +29,16 @@ const LoginPage = () => {
         <Container>
             <Header type="h1">Login</Header>
 
-            <TextBoxLabel>Username:</TextBoxLabel>
-            <TextBox />
+            <TextBoxLabel>Username: @{username}</TextBoxLabel>
+            <TextBox value={username} setTextFunc={setUsername}/>
 
             <TextBoxLabel
                 style={{
                     marginTop: '15px'
                 }}>Password:</TextBoxLabel>
-            <TextBox />
+            <TextBox type="password"
+                value={password}
+                setTextFunc={setPassword}/>
 
             <Button
                 onClick={() => loginAttempt()}
