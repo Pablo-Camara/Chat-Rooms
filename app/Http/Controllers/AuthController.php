@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -23,8 +24,21 @@ class AuthController extends Controller
             Hash::check($password, $user->password)
         ) {
             Auth::loginUsingId($user->id);
-            $token = $request->user()->createToken('auth');
-            return ['token' => $token->plainTextToken];
+            $user = $request->user();
+            $authToken = null;
+            $hasAuthToken = false;
+            foreach($user->tokens as $token) {
+                if ($token->name === 'auth'){
+                    $authToken = $token;
+                    $hasAuthToken = true;
+                    break;
+                }
+            }
+            if (!$hasAuthToken) {
+                $authToken = $user->createToken('auth');
+            }
+
+            return ['token' => $authToken->plainTextToken];
         }
 
         abort(Response::HTTP_UNAUTHORIZED);
