@@ -43,4 +43,15 @@ class AuthController extends Controller
 
         abort(Response::HTTP_UNAUTHORIZED);
     }
+
+    public function logout(Request $request) {
+        $user = $request->user();
+        $tokenNameToDelete = 'auth';
+
+        $user->tokens->each(function ($token) use ($tokenNameToDelete) {
+            if ($token->name === $tokenNameToDelete) {
+                $token->delete();
+            }
+        });
+    }
 }

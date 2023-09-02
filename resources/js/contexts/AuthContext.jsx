@@ -24,8 +24,19 @@ export const AuthContextProvider = ({ children }) => {
         }
     };
 
-    const logout = (callback) => {
-        setIsLoggedIn(false);
+    const logout = async (callback) => {
+        const response = await axios.post('/api/logout');
+
+        if (response.status === 200) {
+            setIsLoggedIn(false);
+            setAuthToken(null);
+            if (typeof callback === 'function') {
+                callback();
+            }
+        } else {
+            throw new Error(response.message);
+        }
+
         if (typeof callback === 'function') {
             callback();
         }
