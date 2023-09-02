@@ -1,6 +1,7 @@
 import Container from "../components/Container";
 import LinkButton from "../components/LinkButton";
 import { useLocation } from 'react-router-dom';
+import { useNavigate } from "react-router";
 import Header from "../components/Header";
 import linkBtnStyles from '../../css/modules/components/LinkButton.module.css';
 import headerStyles from '../../css/modules/components/Header.module.css';
@@ -13,9 +14,12 @@ const ChatRoomPage = () => {
     // will later use both these vars
     console.log('room id: ' + roomId);
     console.log('user id: ' + userId);
+
+    const navigate = useNavigate();
     return <>
         <Container>
-            <LinkButton className={linkBtnStyles.chatRoomBackBtn}>
+            <LinkButton className={linkBtnStyles.chatRoomBackBtn}
+                onClick={() => navigate('/') }>
                 Back to main menu
             </LinkButton>
             <Header type="h1"

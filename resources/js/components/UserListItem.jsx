@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router";
 import Button from "./Button";
 import Container from "./Container";
 import Text from "./Text";
 import styles from '../../css/modules/components/UserListItem.module.css';
 export default function UserListItem({style, user}) {
+    const navigate = useNavigate();
+
     return <>
         <div className={styles.boxItem} style={{...style}}>
             <Text style={{
@@ -28,7 +31,7 @@ export default function UserListItem({style, user}) {
                 textAlign: 'right'
             }}>
                 <Button
-                    onClick={() => alert('test')}
+                    onClick={() => navigate('/chat')}
                     style={{
                         width: '120px',
                         display: 'inline-block',
