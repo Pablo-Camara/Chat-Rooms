@@ -56,10 +56,45 @@ export const AuthContextProvider = ({ children }) => {
         }
     };
 
-    const register = (callback) => {
-        setIsLoggedIn(true);
-        if (typeof callback === 'function') {
-            callback();
+    const register = async (
+        firstName,
+        lastName,
+        username,
+        password,
+        passwordConfirmation,
+        successCallback,
+        failCallback
+    ) => {
+
+        let response;
+        try {
+            response = await axios.post('/api/register', {
+                firstName,
+                lastName,
+                username,
+                password,
+                passwordConfirmation
+            });
+        } catch (error) {
+            if (typeof failCallback === 'function') {
+                failCallback(error.response.data.errors);
+            }
+            return;
+        }
+
+        if (response.status === 200) {
+            if(response.data.token) {
+                setIsLoggedIn(true);
+                setAuthToken(response.data.token);
+                if (typeof successCallback === 'function') {
+                    successCallback();
+                }
+            }
+        } else {
+            if (typeof failCallback === 'function') {
+                failCallback(response.data.errors);
+            }
+            throw new Error(response.message);
         }
     };
 
