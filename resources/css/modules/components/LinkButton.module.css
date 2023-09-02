@@ -5,4 +5,14 @@
     text-align: left;
     display: inline-block;
     cursor: pointer;
-  }
+}
+
+
+.chatRoomBackBtn {
+    display: block;
+    font-family: Verdana;
+    font-size: 16px;
+    color: #000000;
+    text-align: center;
+    margin-top: 18px;
+}

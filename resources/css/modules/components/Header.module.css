@@ -16,3 +16,8 @@ h2.defaultHeader {
     color: #000000;
     text-align: center;
 }
+
+
+.chatRoomHeader {
+    margin-top: 12px;
+}

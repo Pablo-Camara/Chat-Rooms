@@ -9,6 +9,7 @@ import AuthContextProvider from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import MainMenuPage from './pages/MainMenuPage';
+import ChatRoomPage from './pages/ChatRoomPage';
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
     {
         path: "register",
         element: <RegisterPage />,
+    },
+    {
+        path: "chat",
+        element: <ChatRoomPage />,
     }
 ]);
 
