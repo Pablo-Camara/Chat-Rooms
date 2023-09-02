@@ -1,4 +1,5 @@
-.textBoxContainer {
+.textBoxContainer,
+.sendMessageTextarea {
     background: #D8D8D8;
     border: 1px solid #979797;
     width: 280px;
@@ -8,12 +9,18 @@
 }
 
 .textBoxContainer input[type="text"],
-.textBoxContainer input[type="password"] {
+.textBoxContainer input[type="password"],
+.sendMessageTextarea textarea {
     width: 100%;
     height: 100%;
-    padding: 0 14px;
+    padding-left: 14px;
     margin: 0;
     border: none;
     outline: none;
     background: transparent;
+}
+
+.sendMessageTextarea {
+    padding-top: 8px;
+    height: 63px;
 }

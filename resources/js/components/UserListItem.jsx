@@ -3,11 +3,13 @@ import Button from "./Button";
 import Container from "./Container";
 import Text from "./Text";
 import styles from '../../css/modules/components/UserListItem.module.css';
+import UserName from "./UserName";
 export default function UserListItem({style, user}) {
     const navigate = useNavigate();
 
     return <>
         <div className={styles.boxItem} style={{...style}}>
+
             <Text style={{
                 textAlign: 'left',
                 color: '#1D398F',
@@ -16,22 +18,14 @@ export default function UserListItem({style, user}) {
                 {user.firstName} {user.lastName}
             </Text>
 
-            <Text style={{
-                textAlign: 'left',
-                color: '#1D398F',
-                fontSize: '12px',
-                fontWeight: 'bold',
-                marginTop: '6px'
-            }}>
-                @{user.username}
-            </Text>
+            <UserName style={{textAlign: 'left'}} user={user} />
 
             <Container style={{
                 marginTop: '16px',
                 textAlign: 'right'
             }}>
                 <Button
-                    onClick={() => navigate('/chat')}
+                    onClick={() => navigate('/chat?userId=' + user.id)}
                     style={{
                         width: '120px',
                         display: 'inline-block',

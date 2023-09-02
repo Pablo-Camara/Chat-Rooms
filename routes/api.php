@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FriendsController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +24,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/logout', [ AuthController::class, 'logout' ]);
     Route::get('/friends', [ FriendsController::class, 'myFriends' ]);
+
+    Route::get('/chat/{userId}', [ ChatController::class, 'privateChat' ]);
 });
 
 Route::post('/login', [ AuthController::class, 'login' ]);

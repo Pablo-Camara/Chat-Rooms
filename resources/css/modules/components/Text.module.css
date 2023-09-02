@@ -4,3 +4,20 @@
     color: #000000;
     text-align: center;
 }
+
+.chatTitle {
+    font-family: Verdana;
+    font-size: 14px;
+    color: #1D398F;
+    text-align: center;
+}
+
+
+.sendMessageTitle {
+    font-family: Verdana;
+    font-size: 20px;
+    color: #1B1F50;
+    text-align: left;
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
