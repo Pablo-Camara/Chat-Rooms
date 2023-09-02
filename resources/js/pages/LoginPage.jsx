@@ -29,7 +29,7 @@ const LoginPage = () => {
         <Container>
             <Header type="h1">Login</Header>
 
-            <TextBoxLabel>Username: @{username}</TextBoxLabel>
+            <TextBoxLabel>Username:</TextBoxLabel>
             <TextBox value={username} setTextFunc={setUsername}/>
 
             <TextBoxLabel
