@@ -1,0 +1,9 @@
+.unauthenticatedNavbar {
+    background: #022C48;
+    height: 37px;
+    line-height: 37px;
+    font-family: Verdana;
+    font-size: 14px;
+    color: #FFFFFF;
+    text-align: center;
+}

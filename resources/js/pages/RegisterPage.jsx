@@ -8,6 +8,7 @@ import Button from "../components/Button";
 import HorizontalSeparator from "../components/HorizontalSeparator";
 import { useNavigate } from "react-router";
 import Text from "../components/Text";
+import Navbar from "../components/Navbar";
 
 const RegisterPage = () => {
   const { register } = useContext(AuthContext);
@@ -49,6 +50,7 @@ const RegisterPage = () => {
   };
 
   return <>
+        <Navbar />
         <Container>
             <Header type="h1">Create an account</Header>
 
