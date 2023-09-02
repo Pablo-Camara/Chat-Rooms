@@ -5,12 +5,10 @@ import Container from "../components/Container";
 import Header from "../components/Header";
 import LinkButton from "../components/LinkButton";
 import Button from "../components/Button";
-import Text from "../components/Text";
-import UserListItem from "../components/UserListItem";
+import MyFriends from "../components/MyFriends";
 
 const MainMenuPage = () => {
-  const { isLoggedIn, authToken, logout } = useContext(AuthContext);
-  const [ friends, setFriends ] = useState([]);
+  const { isLoggedIn, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,14 +16,7 @@ const MainMenuPage = () => {
         navigate('/login');
         return;
     }
-    alert(authToken);
-    // will use authToken to request friends list
-
   }, [isLoggedIn]);
-
-  if (!isLoggedIn) {
-    return <></>;
-  }
 
   const logoutAttempt = () => {
     logout(() => {
@@ -74,37 +65,9 @@ const MainMenuPage = () => {
                 marginTop: '13px'
             }}>Find other users</Button>
 
-        <Header type="h2"
-            style={{
-                fontSize: '24px',
-                color: '#1B1F50'
-            }}>My friends ({friends.length})</Header>
 
-        {
-            friends.length == 0
-            &&
-            <Text style={{
-                marginTop: '13px'
-            }}>
-                You haven’t added any friends yet
-            </Text>
-        }
 
-        {
-            friends.length > 0
-            &&
-            <>
-                {
-                    friends.map((user, index) => (
-                        <UserListItem user={user}
-                            style={{
-                                marginTop: '18px'
-                            }}/>
-                    ))
-                }
-            </>
-        }
-
+        <MyFriends />
     </Container>
   </>;
 };
