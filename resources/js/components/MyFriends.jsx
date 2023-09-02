@@ -51,7 +51,7 @@ export default function MyFriends () {
             style={{
                 fontSize: '24px',
                 color: '#1B1F50'
-            }}>My friends ({friends.length})</Header>
+            }}>My friends ({isLoadingFriends ? '...' : friends.length})</Header>
 
         {
             isLoadingFriends
