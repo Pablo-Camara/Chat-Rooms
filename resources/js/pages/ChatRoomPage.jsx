@@ -1,10 +1,8 @@
 import Container from "../components/Container";
-import LinkButton from "../components/LinkButton";
 import { useState, useContext, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router";
 import Header from "../components/Header";
-import linkBtnStyles from '../../css/modules/components/LinkButton.module.css';
 import headerStyles from '../../css/modules/components/Header.module.css';
 import txtStyles from '../../css/modules/components/Text.module.css';
 import txtBoxStyles from '../../css/modules/components/TextBox.module.css';
@@ -60,10 +58,6 @@ const ChatRoomPage = () => {
     return <>
         <Navbar authenticated={true}/>
         <Container>
-            <LinkButton className={linkBtnStyles.chatRoomBackBtn}
-                onClick={() => navigate('/') }>
-                Back to main menu
-            </LinkButton>
             <Header type="h1"
                 className={headerStyles.chatRoomHeader}>
                     Chat room
