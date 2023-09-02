@@ -7,6 +7,7 @@ import LinkButton from "../components/LinkButton";
 import Button from "../components/Button";
 import MyFriends from "../components/MyFriends";
 import linkBtnStyles from '../../css/modules/components/LinkButton.module.css';
+import Navbar from "../components/Navbar";
 
 
 const MainMenuPage = () => {
@@ -28,6 +29,7 @@ const MainMenuPage = () => {
 
 
   return <>
+    <Navbar authenticated={true}/>
     <Container>
         <Header type="h1">Main Menu</Header>
         <Container style={{

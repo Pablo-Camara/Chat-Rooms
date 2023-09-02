@@ -1,4 +1,5 @@
-.unauthenticatedNavbar {
+.unauthenticatedNavbar,
+.authenticatedNavbar {
     background: #022C48;
     height: 37px;
     line-height: 37px;

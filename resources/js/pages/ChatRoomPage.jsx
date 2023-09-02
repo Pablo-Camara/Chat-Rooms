@@ -14,6 +14,7 @@ import HorizontalSeparator from "../components/HorizontalSeparator";
 import UserName from "../components/UserName";
 import TextArea from "../components/TextArea";
 import Button from "../components/Button";
+import Navbar from "../components/Navbar";
 
 const ChatRoomPage = () => {
     const location = useLocation();
@@ -57,6 +58,7 @@ const ChatRoomPage = () => {
       }, []);
 
     return <>
+        <Navbar authenticated={true}/>
         <Container>
             <LinkButton className={linkBtnStyles.chatRoomBackBtn}
                 onClick={() => navigate('/') }>
