@@ -36,6 +36,7 @@ const ChatRoomPage = () => {
     const [ currentMessage, setCurrentMessage ] = useState('');
     const [ chatMessages, setChatMessages ] = useState([
         {
+            chatMessageId: 1,
             username: 'pablocamara1996',
             message: 'Hello',
             dateSent: 'Tue 29 Aug 2023 17:18:12'

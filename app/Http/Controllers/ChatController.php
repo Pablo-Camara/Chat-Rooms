@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatRoom;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ChatController extends Controller
 {
@@ -12,7 +15,33 @@ class ChatController extends Controller
         $user = $request->user();
         $destinationUser = User::find($userId);
 
+        $chatRoom = ChatRoom::where(
+            function($query) use ($user, $destinationUser) {
+                return $query->where('sender_id','=', $user->id)
+                    ->where('receiver_id', '=', $destinationUser->id);
+            }
+        )->orWhere(
+            function($query) use ($user, $destinationUser) {
+                return $query->where('sender_id','=', $destinationUser->id)
+                    ->where('receiver_id', '=', $user->id);
+            }
+        )->where('is_private', '=', 1)->first();
+
+        if (empty($chatRoom)) {
+            $chatRoom = new ChatRoom();
+            $chatRoom->title = 'Private Chat';
+            $chatRoom->max_users = 2;
+            $chatRoom->is_private = 1;
+            $chatRoom->sender_id = $user->id;
+            $chatRoom->receiver_id = $destinationUser->id;
+            $chatRoom->password = Hash::make(Str::random(255));
+            $chatRoom->save();
+        }
+
         return response()->json([
+            'chatRoom' => [
+                'id' => $chatRoom->id
+            ],
             'user' => [
                 'id' => $user->id,
                 'firstName' => $user->firstName,

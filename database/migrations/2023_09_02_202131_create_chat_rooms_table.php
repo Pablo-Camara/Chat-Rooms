@@ -16,8 +16,13 @@ return new class extends Migration
             $table->string('title');
             $table->unsignedInteger('max_users');
             $table->boolean('is_private');
+            $table->unsignedBigInteger('sender_id');
+            $table->unsignedBigInteger('receiver_id');
             $table->string('password', 255);
             $table->timestamps();
+
+            $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('receiver_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
