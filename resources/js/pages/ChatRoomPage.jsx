@@ -125,7 +125,8 @@ const ChatRoomPage = () => {
                                         }
                                     }
                                         style={{
-                                            display: 'inline-block'
+                                            display: 'inline-block',
+                                            color: chatMessage.sender.id === user.id ? 'rgb(0 136 255)' : 'rgb(29, 57, 143)'
                                         }}/> says:
 
                                     <div style={{
