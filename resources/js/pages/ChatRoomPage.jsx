@@ -75,6 +75,7 @@ const ChatRoomPage = () => {
             setUser(responseData.user);
             setDestinationUser(responseData.destinationUser);
             setChatMessages(responseData.chatRoom.messages);
+            setCurrentMessage('');
         })
         .catch(error => {
             // Handle any errors that occur during the request.
@@ -225,7 +226,7 @@ const ChatRoomPage = () => {
                         Send a message:
                     </Text>
                     <TextArea className={txtBoxStyles.sendMessageTextarea}
-                        defaultValue={currentMessage}
+                        value={currentMessage}
                         setTextFunc={setCurrentMessage} />
 
                     <Container style={{

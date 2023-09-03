@@ -17,7 +17,12 @@ class ChatController extends Controller
 
         $chatRoom = ChatRoomService::getOrCreatePrivateRoomBetweenUsers($user, $destinationUser);
 
-        $chatRoomMessages = $chatRoom->messages->all();
+
+        $chatRoomMessages = $chatRoom->messages()
+            ->latest()
+            ->paginate(5)
+            ->items();
+        $chatRoomMessages = array_reverse($chatRoomMessages);
 
         return response()->json(
             ChatRoomService::getPrivateChatRoomResponseData(
@@ -46,7 +51,11 @@ class ChatController extends Controller
             $destinationUser
         );
 
-        $chatRoomMessages = $chatRoom->messages->all();
+        $chatRoomMessages = $chatRoom->messages()
+            ->latest()
+            ->paginate(5)
+            ->items();
+        $chatRoomMessages = array_reverse($chatRoomMessages);
 
         return response()->json(
             ChatRoomService::getPrivateChatRoomResponseData(

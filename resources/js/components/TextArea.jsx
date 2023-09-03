@@ -3,8 +3,8 @@ export default function TextArea({ className, value, setTextFunc }) {
         <div className={className}>
             <textarea
                 onChange={(e) => setTextFunc(e.target.value) }
+                value={value}
             >
-                {value}
             </textarea>
         </div>
     </>;
