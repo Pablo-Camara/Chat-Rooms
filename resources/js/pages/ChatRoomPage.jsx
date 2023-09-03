@@ -34,14 +34,7 @@ const ChatRoomPage = () => {
     const [ destinationUser, setDestinationUser ] = useState(null);
 
     const [ currentMessage, setCurrentMessage ] = useState('');
-    const [ chatMessages, setChatMessages ] = useState([
-        {
-            chatMessageId: 1,
-            username: 'pablocamara1996',
-            message: 'Hello',
-            dateSent: 'Tue 29 Aug 2023 17:18:12'
-        }
-    ]);
+    const [ chatMessages, setChatMessages ] = useState([]);
 
     isPrivateChat && useEffect(() => {
         // fetch friends
@@ -56,7 +49,7 @@ const ChatRoomPage = () => {
             const responseData = response.data;
             setUser(responseData.user);
             setDestinationUser(responseData.destinationUser);
-
+            setChatMessages(responseData.chatRoom.messages);
         })
         .catch(error => {
             // Handle any errors that occur during the request.
@@ -116,13 +109,14 @@ const ChatRoomPage = () => {
                 <>
                     {
                         chatMessages.map((chatMessage, index) => {
+                            const createdAtDate = (new Date(chatMessage.dateSent)).toLocaleString();
                             return <Container className={containerStyles.msgContainer}>
                                 <div style={{
                                     textAlign: 'left'
                                 }}>
                                     <UserName user={
                                         {
-                                            username: chatMessage.username
+                                            username: chatMessage.sender.username
                                         }
                                     }
                                         style={{
@@ -162,7 +156,7 @@ const ChatRoomPage = () => {
                                     {chatMessage.message}
                                 </Text>
                                 <Text className={containerStyles.msgDateSentContainer}>
-                                    {chatMessage.dateSent}
+                                    {createdAtDate}
                                 </Text>
                             </Container>
                         })

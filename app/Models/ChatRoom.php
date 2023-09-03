@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ChatRoom extends Model
 {
     use HasFactory;
+
+    public function messages()
+    {
+        return $this->hasMany(ChatRoomMessage::class, 'chat_room_id');
+    }
 }
