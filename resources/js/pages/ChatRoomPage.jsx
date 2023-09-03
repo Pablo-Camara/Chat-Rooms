@@ -35,6 +35,7 @@ const ChatRoomPage = () => {
 
     const [ currentMessage, setCurrentMessage ] = useState('');
     const [ chatMessages, setChatMessages ] = useState([]);
+    const [ isLoadingChat, setIsLoadingChat ] = useState(true);
 
     isPrivateChat && useEffect(() => {
         // fetch friends
@@ -50,6 +51,7 @@ const ChatRoomPage = () => {
             setUser(responseData.user);
             setDestinationUser(responseData.destinationUser);
             setChatMessages(responseData.chatRoom.messages);
+            setIsLoadingChat(false);
         })
         .catch(error => {
             // Handle any errors that occur during the request.
@@ -66,6 +68,8 @@ const ChatRoomPage = () => {
             </Header>
 
             {
+                !isLoadingChat
+                &&
                 isPrivateChat
                 &&
                 destinationUser
@@ -81,6 +85,8 @@ const ChatRoomPage = () => {
             }
 
             {
+                !isLoadingChat
+                &&
                 isChatRoom
                 &&
                 <Text className={txtStyles.chatTitle}>
@@ -94,6 +100,18 @@ const ChatRoomPage = () => {
             }}/>
 
             {
+                isLoadingChat
+                &&
+                <Text style={{
+                    color: 'gray'
+                }}>
+                    Loading chat..
+                </Text>
+            }
+
+            {
+                !isLoadingChat
+                &&
                 chatMessages.length == 0
                 &&
                 <Text style={{
@@ -104,6 +122,8 @@ const ChatRoomPage = () => {
             }
 
             {
+                !isLoadingChat
+                &&
                 chatMessages.length > 0
                 &&
                 <>
@@ -174,26 +194,35 @@ const ChatRoomPage = () => {
                 marginTop: '26px'
             }}/>
 
-            <Text className={txtStyles.sendMessageTitle}>
-                Send a message:
-            </Text>
-            <TextArea className={txtBoxStyles.sendMessageTextarea}
-                defaultValue={currentMessage}
-                setTextFunc={setCurrentMessage} />
+            {
+                !isLoadingChat
+                &&
+                <>
+                    <Text className={txtStyles.sendMessageTitle}>
+                        Send a message:
+                    </Text>
+                    <TextArea className={txtBoxStyles.sendMessageTextarea}
+                        defaultValue={currentMessage}
+                        setTextFunc={setCurrentMessage} />
 
-            <Container style={{
-                marginTop: '6px',
-                textAlign: 'right'
-            }}>
-                <Button
-                    onClick={() => alert('test')}
-                    style={{
-                        width: '73px',
-                        display: 'inline-block',
-                        fontSize: '14px',
-                        marginLeft: '14px'
-                    }}>Send</Button>
-            </Container>
+                    <Container style={{
+                        marginTop: '6px',
+                        textAlign: 'right'
+                    }}>
+                        <Button
+                            onClick={() => alert('test')}
+                            style={{
+                                width: '73px',
+                                display: 'inline-block',
+                                fontSize: '14px',
+                                marginLeft: '14px'
+                            }}>Send</Button>
+                    </Container>
+                </>
+
+            }
+
+
         </Container>
     </>
 };
