@@ -59,6 +59,29 @@ const ChatRoomPage = () => {
         });
       }, []);
 
+    const sendChatMessage = (message) => {
+        axios({
+            method: 'POST',
+            url: '/api/chat/' + userId + '/msg',
+            headers: {
+              'Authorization': `Bearer ${authToken}`,
+            },
+            data: {
+                message
+            }
+        })
+        .then(response => {
+            const responseData = response.data;
+            setUser(responseData.user);
+            setDestinationUser(responseData.destinationUser);
+            setChatMessages(responseData.chatRoom.messages);
+        })
+        .catch(error => {
+            // Handle any errors that occur during the request.
+            console.error('Error:', error);
+        });
+    };
+
     return <>
         <Navbar authenticated={true}/>
         <Container>
@@ -210,7 +233,7 @@ const ChatRoomPage = () => {
                         textAlign: 'right'
                     }}>
                         <Button
-                            onClick={() => alert('test')}
+                            onClick={() => sendChatMessage(currentMessage)}
                             style={{
                                 width: '73px',
                                 display: 'inline-block',
