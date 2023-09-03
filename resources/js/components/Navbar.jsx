@@ -10,7 +10,10 @@ export default function Navbar({ authenticated }) {
             {
                 !authenticated
                 &&
-                'Chat rooms'
+                <span onClick={() => navigate('/')}
+                    style={{
+                        cursor: 'pointer'
+                }}>Chat rooms</span>
             }
 
             {
