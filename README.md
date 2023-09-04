@@ -2,7 +2,7 @@
 
 - Laravel 10
 - React
-- composer package "beyondcode/laravel-websockets" for server side websockets
+- "Soketi" for websockets server
 - npm package "laravel-echo" for client side of websockets
 
 ## Destination URL && Development environment URL
