@@ -17,8 +17,10 @@ class ChatRoomMessageService {
         $chatRoomMessage->message = $message;
         $chatRoomMessage->sender_id = $user->id;
         $chatRoomMessage->receiver_id = $destinationUser->id;
-        $chatRoomMessage->save();
-        return $chatRoomMessage;
+        if ($chatRoomMessage->save() ){
+            return $chatRoomMessage;
+        }
+        return null;
     }
 
 }

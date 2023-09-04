@@ -58,6 +58,7 @@ class ChatRoomService {
         $response = [
             'chatRoom' => [
                 'id' => $chatRoom->id,
+                'title' => $chatRoom->title,
                 'messages' => array_map(
                     function ($chatMessage) {
                         return [

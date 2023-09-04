@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatMessageSent;
 use App\Models\User;
 use App\Services\ChatRoomMessageService;
 use App\Services\ChatRoomService;
@@ -61,11 +62,16 @@ class ChatController extends Controller
             return;
         }
 
-        ChatRoomMessageService::createChatRoomMessage(
+        $chatRoomMessage = ChatRoomMessageService::createChatRoomMessage(
             $chatRoom,
             $message,
             $user,
             $destinationUser
+        );
+
+        ChatMessageSent::dispatchIf(
+            !empty($chatRoomMessage),
+            $chatRoomMessage
         );
 
         $chatRoomMessages = $chatRoom->messages()

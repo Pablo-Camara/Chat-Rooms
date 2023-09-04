@@ -28,14 +28,39 @@ const ChatRoomPage = () => {
 
     const { authToken } = useContext(AuthContext);
 
-    const [ chatTitle, setChatTitle ] = useState('');
-
     const [ user, setUser ] = useState(null);
     const [ destinationUser, setDestinationUser ] = useState(null);
 
+    const [ chatRoomId, setChatRoomId ] = useState(null);
+    const [ chatRoomTitle, setChatRoomTitle ] = useState('');
     const [ currentMessage, setCurrentMessage ] = useState('');
     const [ chatMessages, setChatMessages ] = useState([]);
     const [ isLoadingChat, setIsLoadingChat ] = useState(true);
+
+    if (chatRoomId) {
+        window.Echo.private('chatRoom.' + chatRoomId)
+            .listen('ChatMessageSent', (e) => {
+                let chatRoomMsg = e.chatRoomMessage;
+                let updatedChatMessages = chatMessages.slice();
+                updatedChatMessages.push({
+                    messageId: chatRoomMsg.id,
+                    message: chatRoomMsg.message,
+                    dateSent: chatRoomMsg.created_at,
+                    sender: {
+                        id: chatRoomMsg.sender.id,
+                        username: chatRoomMsg.sender.username,
+                    },
+                    receiver: {
+                        id: chatRoomMsg.receiver.id,
+                        username: chatRoomMsg.receiver.username,
+                    }
+                });
+
+                setChatMessages(updatedChatMessages);
+            });
+    }
+
+
 
     isPrivateChat && useEffect(() => {
         // fetch friends
@@ -50,6 +75,8 @@ const ChatRoomPage = () => {
             const responseData = response.data;
             setUser(responseData.user);
             setDestinationUser(responseData.destinationUser);
+            setChatRoomId(responseData.chatRoom.id);
+            setChatRoomTitle(responseData.chatRoom.title);
             setChatMessages(responseData.chatRoom.messages);
             setIsLoadingChat(false);
         })
@@ -74,6 +101,8 @@ const ChatRoomPage = () => {
             const responseData = response.data;
             setUser(responseData.user);
             setDestinationUser(responseData.destinationUser);
+            setChatRoomId(responseData.chatRoom.id);
+            setChatRoomTitle(responseData.chatRoom.title);
             setChatMessages(responseData.chatRoom.messages);
             setCurrentMessage('');
         })
@@ -114,7 +143,7 @@ const ChatRoomPage = () => {
                 isChatRoom
                 &&
                 <Text className={txtStyles.chatTitle}>
-                    {chatTitle}
+                    {chatRoomTitle}
                 </Text>
             }
 
