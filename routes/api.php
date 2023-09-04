@@ -26,7 +26,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/friends', [ FriendsController::class, 'myFriends' ]);
 
     Route::get('/chat/{userId}', [ ChatController::class, 'privateChat' ]);
-    Route::post('/chat/{userId}/msg', [ ChatController::class, 'privateChatMessage' ]);
+    Route::post('/chat/{userId}/msg', [ ChatController::class, 'sendPrivateChatMessage' ]);
 });
 
 Route::post('/login', [ AuthController::class, 'login' ]);

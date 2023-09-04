@@ -34,7 +34,7 @@ class ChatController extends Controller
         );
     }
 
-    public function privateChatMessage($userId, Request $request) {
+    public function sendPrivateChatMessage($userId, Request $request) {
         $user = $request->user();
         $destinationUser = User::find($userId);
         $message = $request->input('message');
