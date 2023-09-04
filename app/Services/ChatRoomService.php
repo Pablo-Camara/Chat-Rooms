@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ChatRoom;
+use App\Models\ChatRoomUser;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -93,4 +94,27 @@ class ChatRoomService {
         return $response;
     }
 
+    public static function addUserToChatRoom($userId, $chatRoomId) : bool {
+        try {
+            $chatRoomUserEntrance = new ChatRoomUser();
+            $chatRoomUserEntrance->user_id = $userId;
+            $chatRoomUserEntrance->chat_room_id = $chatRoomId;
+            return $chatRoomUserEntrance->save();
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
+    public static function isUserInChatRoom($userId, $chatRoomId) : bool {
+        // user must be inside chat room
+        $chatRoomUserEntrance = ChatRoomUser::where('chat_room_id','=',$chatRoomId)
+            ->where('user_id', '=', $userId)
+            ->first();
+
+        if (empty($chatRoomUserEntrance)) {
+            return false;
+        }
+
+        return true;
+    }
 }
