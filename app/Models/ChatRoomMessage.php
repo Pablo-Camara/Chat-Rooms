@@ -9,6 +9,11 @@ class ChatRoomMessage extends Model
 {
     use HasFactory;
 
+    public function chatRoom()
+    {
+        return $this->belongsTo(ChatRoom::class, 'id', 'chat_room_id');
+    }
+
     public function sender()
     {
         return $this->hasOne(User::class, 'id', 'sender_id');
