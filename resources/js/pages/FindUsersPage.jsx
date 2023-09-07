@@ -13,7 +13,7 @@ const FindUsersPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-
+  const [searchHasError, setSearchHasError] = useState(false);
   useEffect(() => {
     let timerId;
 
@@ -29,30 +29,21 @@ const FindUsersPage = () => {
                 },
             });
         } catch (error) {
-            setIsLoading(false);
-            setSearchResults([
-                {
-                    firstName: 'Pablo',
-                    lastName: 'Câmara',
-                    username: 'pc'
-                },
-                {
-                    firstName: 'John',
-                    lastName: 'Doe',
-                    username: 'johndoe'
-                }
-              ]);
+            setSearchHasError(true);
             console.log(error);
-            return;
         }
 
         if (response.status === 200) {
-            setIsLoading(false);
             setSearchResults(response.data.users);
+            setSearchHasError(false);
+            console.log(response.data);
         } else {
-            setSearchResults([]);
-            throw new Error(response.message);
+            setSearchHasError(true);
+            console.log(response);
         }
+
+        setIsLoading(false);
+
     };
 
     // Debounce the search input by waiting for 1.5 seconds before making the request
@@ -74,29 +65,43 @@ const FindUsersPage = () => {
         <Container>
             <Header type="h1">Find other users</Header>
 
-            <TextBoxLabel>search users by name/username:</TextBoxLabel>
+
             <TextBox value={searchInput} setTextFunc={setSearchInput}/>
 
-
-
-
             {
-                isLoading
-                &&
                 searchInput
                 &&
-                <>
-                    <Header type="h1">Search results:</Header>
-                    <Text style={{color: 'gray'}}>Loading results..</Text>
-                </>
-
+                <Header type="h1">Search results:</Header>
             }
 
             {
                 !isLoading
                 &&
+                !searchInput
+                &&
+                <>
+                    <Text style={{color: 'gray'}}>Use the box above to start searching..</Text>
+                </>
+            }
+
+            {
+                isLoading
+                ||
                 searchInput
                 &&
+                <>
+                    <Text style={{color: 'gray'}}>Loading results..</Text>
+                </>
+            }
+            {
+                searchHasError
+                &&
+                <>
+                    <Text style={{color: 'gray'}}>Could't load search results..</Text>
+                </>
+            }
+
+            {
                 searchResults.length > 0
                 &&
                 searchResults.map((user, index) => (
