@@ -2,115 +2,90 @@ import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import Header from "../components/Header";
 import Container from "../components/Container";
-import TextBoxLabel from "../components/TextBoxLabel";
 import TextBox from "../components/TextBox";
 import Text from "../components/Text";
 import Navbar from "../components/Navbar";
-import UserListItem from "../components/UserListItem";
 
 const FindUsersPage = () => {
-  const { authToken } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchHasError, setSearchHasError] = useState(false);
-  useEffect(() => {
-    let timerId;
+    const { authToken } = useContext(AuthContext);
+    const [searchInput, setSearchInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [hasSearchError, setHasSearchError] = useState(false);
+    useEffect(() => {
+        let searchTimerId;
 
-    // Function to send the GET request
-    const fetchData = async () => {
-        try {
+        if (searchInput) {
             setIsLoading(true);
-            response = await axios.post('/api/find-users', {
-                searchInput
-            },{
+        }
+
+        const fetchData = () => {
+            setIsLoading(true);
+            axios({
+                method: 'POST',
+                url: '/api/find-users',
                 headers: {
-                  Authorization: `Bearer ` + authToken,
+                  'Authorization': `Bearer ${authToken}`,
                 },
+                data: {
+                    searchInput
+                }
+            })
+            .then(response => {
+                const responseData = response.data;
+                console.log(responseData);
+                setHasSearchError(false);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                // Handle any errors that occur during the request.
+                console.error('Error:', error);
+                setHasSearchError(true);
+                setIsLoading(false);
             });
-        } catch (error) {
-            setSearchHasError(true);
-            console.log(error);
         }
 
-        if (response.status === 200) {
-            setSearchResults(response.data.users);
-            setSearchHasError(false);
-            console.log(response.data);
-        } else {
-            setSearchHasError(true);
-            console.log(response);
+         // Debounce the search input by waiting for 1.5 seconds before making the request
+        searchTimerId = setTimeout(() => {
+            if (searchInput) {
+            fetchData();
+            }
+        }, 1500);
+
+        return () => {
+            setHasSearchError(false);
+            clearTimeout(searchTimerId);
         }
+    }, [searchInput]);
 
-        setIsLoading(false);
-
-    };
-
-    // Debounce the search input by waiting for 1.5 seconds before making the request
-    timerId = setTimeout(() => {
-      if (searchInput) {
-        fetchData();
-      }
-    }, 1500);
-
-    // Cleanup function to cancel the timer when the input changes
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [searchInput]);
-
-
-  return <>
+    return <>
         <Navbar />
         <Container>
             <Header type="h1">Find other users</Header>
 
 
             <TextBox value={searchInput} setTextFunc={setSearchInput}/>
-
             {
-                searchInput
-                &&
-                <Header type="h1">Search results:</Header>
-            }
-
-            {
-                !isLoading
-                &&
                 !searchInput
                 &&
-                <>
-                    <Text style={{color: 'gray'}}>Use the box above to start searching..</Text>
-                </>
+                <Text style={{color: 'gray'}}>Use the box above to start searching..</Text>
             }
-
             {
-                isLoading
-                ||
                 searchInput
                 &&
-                <>
-                    <Text style={{color: 'gray'}}>Loading results..</Text>
-                </>
+                isLoading
+                &&
+                !hasSearchError
+                &&
+                <Text style={{color: 'blue'}}>Searching for users..</Text>
             }
             {
-                searchHasError
+                hasSearchError
                 &&
-                <>
-                    <Text style={{color: 'gray'}}>Could't load search results..</Text>
-                </>
+                !isLoading
+                &&
+                <Text style={{color: 'red'}}>Something went wrong..</Text>
             }
 
-            {
-                searchResults.length > 0
-                &&
-                searchResults.map((user, index) => (
-                    <UserListItem key={'user_list_item_' + index} user={user}
-                        style={{
-                            marginTop: '18px'
-                        }}/>
-                ))
-            }
         </Container>
 
     </>;
