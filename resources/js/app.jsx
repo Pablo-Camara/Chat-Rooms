@@ -10,6 +10,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import MainMenuPage from './pages/MainMenuPage';
 import ChatRoomPage from './pages/ChatRoomPage';
+import FindUsersPage from './pages/FindUsersPage';
 
 const router = createBrowserRouter([
     {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
     {
         path: "chat",
         element: <ChatRoomPage />,
+    },
+    {
+        path: "find-users",
+        element: <FindUsersPage />,
     }
 ]);
 

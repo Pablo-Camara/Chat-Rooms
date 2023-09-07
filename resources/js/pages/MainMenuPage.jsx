@@ -27,6 +27,10 @@ const MainMenuPage = () => {
     })
   };
 
+  const findOtherUsers = () => {
+    navigate('/find-users');
+  };
+
 
   return <>
     <Navbar authenticated={true}/>
@@ -59,7 +63,7 @@ const MainMenuPage = () => {
             }}>Find chat rooms</Button>
 
         <Button
-            onClick={() => alert('test')}
+            onClick={() => findOtherUsers() }
             style={{
                 marginTop: '13px'
             }}>Find other users</Button>
