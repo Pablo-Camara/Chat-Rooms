@@ -62,7 +62,7 @@ const FindUsersPage = () => {
     }, [searchInput]);
 
     return <>
-        <Navbar />
+        <Navbar authenticated={true}/>
         <Container>
             <Header type="h1">Find other users</Header>
 
