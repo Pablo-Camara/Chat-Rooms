@@ -8,7 +8,7 @@ export default function Navbar({ authenticated }) {
     let finalClassName = authenticated ? navbarStyles.authenticatedNavbar : navbarStyles.unauthenticatedNavbar;
     const navigate = useNavigate();
 
-    const [totalNotifications, setTotalNotifications] = useState(0);
+    const [totalNotifications, setTotalNotifications] = useState(2);
     const [showNotifications, setShowNotifications] = useState(false);
     return <>
         <div className={finalClassName}>
@@ -60,7 +60,7 @@ export default function Navbar({ authenticated }) {
                     }}>X</span></div>
 
                 <div className={notificationsStyles.notificationItem}>
-                    You have 2 new messages from <b>@johndoe</b>
+                    You have <b>2</b> new messages from <b>@johndoe</b>
                 </div>
 
                 <div className={notificationsStyles.notificationItem}>
