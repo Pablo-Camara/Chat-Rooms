@@ -36,7 +36,6 @@ const FindUsersPage = () => {
             })
             .then(response => {
                 const responseData = response.data;
-                console.log(responseData);
                 setHasSearchError(false);
                 setIsLoading(false);
                 setSearchResults(responseData);
