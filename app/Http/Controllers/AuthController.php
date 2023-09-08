@@ -32,7 +32,7 @@ class AuthController extends Controller
                     break;
                 }
             }
-            if (!is_null($authToken)) {
+            if (is_null($authToken)) {
                 $authToken = $user->createToken('auth');
             }
 
