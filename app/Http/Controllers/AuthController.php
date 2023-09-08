@@ -26,15 +26,13 @@ class AuthController extends Controller
             Auth::loginUsingId($user->id);
             $user = $request->user();
             $authToken = null;
-            $hasAuthToken = false;
             foreach($user->tokens as $token) {
                 if ($token->name === 'auth'){
                     $authToken = $token;
-                    $hasAuthToken = true;
                     break;
                 }
             }
-            if (!$hasAuthToken) {
+            if (!is_null($authToken)) {
                 $authToken = $user->createToken('auth');
             }
 
