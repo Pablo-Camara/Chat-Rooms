@@ -11,6 +11,9 @@ class UserController extends Controller
     public function findUsers(Request $request) {
         $requestUserId = $request->user()->id;
         $searchInput = $request->input('searchInput');
+        if (strlen(trim($searchInput)) == 0) {
+            return response()->json([]);
+        }
         $results = User::where(function($query) use ($searchInput) {
             return $query->where('username', '=', $searchInput)
                 ->orWhere('username', 'like', '%' . $searchInput . '%');
