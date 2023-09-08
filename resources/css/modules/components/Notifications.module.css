@@ -1,0 +1,32 @@
+.notificationsContainer {
+    max-width: 320px;
+    margin: auto;
+    background: #123c58;
+    padding-bottom: 4px;
+}
+
+
+.notificationsHeader {
+    font-size: 12px;
+    padding: 12px;
+    text-align: right;
+    color: white;
+}
+
+
+.notificationsHeader span {
+    color: red;
+    margin-left: 6px;
+    font-size: 14px;
+}
+
+
+.notificationItem {
+    width: 280px;
+    margin: auto;
+    background: white;
+    font-size: 12px;
+    padding: 8px;
+    text-align: right;
+    margin-bottom: 12px;
+}
