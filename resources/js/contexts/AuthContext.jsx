@@ -5,7 +5,9 @@ export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [authToken, setAuthToken] = useState(null);
+    const [authToken, setAuthToken] = useState(
+        localStorage.getItem('authToken')
+    );
 
     const login = async (
         username, password,
@@ -27,6 +29,7 @@ export const AuthContextProvider = ({ children }) => {
         if (response.status === 200) {
             setIsLoggedIn(true);
             setAuthToken(response.data.token);
+            localStorage.setItem('authToken', response.data.token);
             if (typeof successCallback === 'function') {
                 successCallback();
             }
@@ -44,6 +47,7 @@ export const AuthContextProvider = ({ children }) => {
         if (response.status === 200) {
             setIsLoggedIn(false);
             setAuthToken(null);
+            localStorage.removeItem('authToken');
             if (typeof callback === 'function') {
                 callback();
             }
@@ -86,6 +90,7 @@ export const AuthContextProvider = ({ children }) => {
             if(response.data.token) {
                 setIsLoggedIn(true);
                 setAuthToken(response.data.token);
+                localStorage.setItem('authToken', response.data.token);
                 if (typeof successCallback === 'function') {
                     successCallback();
                 }
