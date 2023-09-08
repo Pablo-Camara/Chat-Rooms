@@ -5,14 +5,16 @@ import Container from "../components/Container";
 import TextBox from "../components/TextBox";
 import Text from "../components/Text";
 import Navbar from "../components/Navbar";
+import UserListItem from "../components/UserListItem";
 
 const FindUsersPage = () => {
     const { authToken } = useContext(AuthContext);
     const [searchInput, setSearchInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [hasSearchError, setHasSearchError] = useState(false);
+    const [searchResults, setSearchResults] = useState([]);
 
-    // search effect to find users
+    // search effect to find users on search change
     useEffect(() => {
         let searchTimerId;
 
@@ -37,6 +39,7 @@ const FindUsersPage = () => {
                 console.log(responseData);
                 setHasSearchError(false);
                 setIsLoading(false);
+                setSearchResults(responseData);
             })
             .catch(error => {
                 // Handle any errors that occur during the request.
@@ -86,6 +89,17 @@ const FindUsersPage = () => {
                 !isLoading
                 &&
                 <Text style={{color: 'red'}}>Something went wrong..</Text>
+            }
+
+            {
+                searchResults.length > 0
+                &&
+                searchResults.map((user, index) => (
+                    <UserListItem key={'user_list_item_' + index} user={user}
+                        style={{
+                            marginTop: '18px'
+                        }}/>
+                ))
             }
 
         </Container>
