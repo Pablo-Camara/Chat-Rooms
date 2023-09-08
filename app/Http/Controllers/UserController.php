@@ -18,14 +18,16 @@ class UserController extends Controller
             $words = explode(" ", $searchInput);
             foreach($words as $word) {
                 $word = trim($word);
-                $query = $query->orWhere('firstName', '=', $word);
+                $query = $query->orWhere('firstName', '=', $word)
+                    ->orWhere('firstName', 'like', '%' . $word . '%');
             }
             return $query;
         })->orWhere(function($query) use ($searchInput) {
             $words = explode(" ", $searchInput);
             foreach($words as $word) {
                 $word = trim($word);
-                $query = $query->orWhere('firstName', '=', $word);
+                $query = $query->orWhere('lastName', '=', $word)
+                    ->orWhere('lastName', 'like', '%' . $word . '%');
             }
             return $query;
         })->orWhere(function($query) use ($searchInput) {
