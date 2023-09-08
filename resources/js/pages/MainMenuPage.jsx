@@ -19,7 +19,7 @@ const MainMenuPage = () => {
         navigate('/login');
         return;
     }
-  }, [isLoggedIn]);
+  }, []);
 
   const logoutAttempt = () => {
     logout(() => {
@@ -69,8 +69,11 @@ const MainMenuPage = () => {
             }}>Find other users</Button>
 
 
-
-        <MyFriends />
+        {
+            isLoggedIn
+            &&
+            <MyFriends />
+        }
     </Container>
   </>;
 };
