@@ -4,10 +4,10 @@ import { createContext, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [authToken, setAuthToken] = useState(
         localStorage.getItem('authToken')
     );
+    const [isLoggedIn, setIsLoggedIn] = useState(authToken != null ? true : false);
 
     const login = async (
         username, password,
