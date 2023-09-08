@@ -91,6 +91,10 @@ const FindUsersPage = () => {
             }
 
             {
+                searchInput
+                &&
+                !isLoading
+                &&
                 searchResults.length > 0
                 &&
                 searchResults.map((user, index) => (
