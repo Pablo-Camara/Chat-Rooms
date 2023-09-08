@@ -12,6 +12,7 @@ const FindUsersPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [hasSearchError, setHasSearchError] = useState(false);
 
+    // search effect to find users
     useEffect(() => {
         let searchTimerId;
 
