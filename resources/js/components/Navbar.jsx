@@ -1,11 +1,15 @@
 import navbarStyles from '../../css/modules/components/Navbar.module.css';
 import notificationsStyles from '../../css/modules/components/Notifications.module.css';
 import Container from './Container';
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function Navbar({ authenticated }) {
     let finalClassName = authenticated ? navbarStyles.authenticatedNavbar : navbarStyles.unauthenticatedNavbar;
     const navigate = useNavigate();
+
+    const [totalNotifications, setTotalNotifications] = useState(0);
+    const [showNotifications, setShowNotifications] = useState(false);
     return <>
         <div className={finalClassName}>
             {
@@ -28,27 +32,41 @@ export default function Navbar({ authenticated }) {
                             cursor: 'pointer'
                         }}>Chat rooms</span>
 
-                    <div style={{
-                        float: 'right',
-                        cursor: 'pointer',
-                        fontSize: '12px'
-                    }}>
-                        1 new Notification
-                    </div>
+                    {
+                        totalNotifications > 0
+                        &&
+                        <div style={{
+                            float: 'right',
+                            cursor: 'pointer',
+                            fontSize: '12px'
+                        }}
+                            onClick={() => {
+                                setShowNotifications(!showNotifications);
+                            }}>
+                            {totalNotifications} new Notifications
+                        </div>
+                    }
                 </Container>
             }
         </div>
-        <Container className={notificationsStyles.notificationsContainer}>
-            <div className={notificationsStyles.notificationsHeader}>
-                Notifications <span>X</span></div>
 
-            <div className={notificationsStyles.notificationItem}>
-                You have 2 new messages from <b>@johndoe</b>
-            </div>
+        {
+            showNotifications
+            &&
+            <Container className={notificationsStyles.notificationsContainer}>
+                <div className={notificationsStyles.notificationsHeader}>
+                    Notifications <span onClick={() => {
+                        setShowNotifications(false);
+                    }}>X</span></div>
 
-            <div className={notificationsStyles.notificationItem}>
-                New friend request from <b>@johndoe</b>
-            </div>
-        </Container>
+                <div className={notificationsStyles.notificationItem}>
+                    You have 2 new messages from <b>@johndoe</b>
+                </div>
+
+                <div className={notificationsStyles.notificationItem}>
+                    New friend request from <b>@johndoe</b>
+                </div>
+            </Container>
+        }
     </>;
 };
