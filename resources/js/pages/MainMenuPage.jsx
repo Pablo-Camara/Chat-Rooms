@@ -35,7 +35,6 @@ const MainMenuPage = () => {
   return <>
     <Navbar authenticated={true}/>
     <Container>
-        <Header type="h1">Main Menu</Header>
         <Container style={{
             marginTop: '20px'
         }}>
