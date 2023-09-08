@@ -11,6 +11,7 @@ const FindUsersPage = () => {
     const [searchInput, setSearchInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [hasSearchError, setHasSearchError] = useState(false);
+
     useEffect(() => {
         let searchTimerId;
 
@@ -47,7 +48,7 @@ const FindUsersPage = () => {
          // Debounce the search input by waiting for 1.5 seconds before making the request
         searchTimerId = setTimeout(() => {
             if (searchInput) {
-            fetchData();
+                fetchData();
             }
         }, 1500);
 
