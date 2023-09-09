@@ -11,7 +11,7 @@ class UserController extends Controller
     public function findUsers(Request $request) { //@TODO: pagination
         $requestUserId = $request->user()->id;
         $searchInput = trim($request->input('searchInput', ''));
-        if (strlen($searchInput) == 0) {
+        if (empty($searchInput)) {
             //@TODO: show default search of users order by username ascending
             $results = User::select('*')
                         ->where('id', '!=', $requestUserId)
