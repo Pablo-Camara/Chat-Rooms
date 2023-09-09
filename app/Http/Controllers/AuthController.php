@@ -36,7 +36,10 @@ class AuthController extends Controller
                 $authToken = $user->createToken('auth');
             }
 
-            return response()->json(['token' => $authToken->plainTextToken]);
+            return response()->json([
+                'token' => $authToken->plainTextToken,
+                'userId' => $user->id
+            ]);
         }
 
         abort(Response::HTTP_UNAUTHORIZED);
@@ -125,7 +128,10 @@ class AuthController extends Controller
         Auth::loginUsingId($newUser->id);
         $authToken = $request->user()->createToken('auth');
 
-        return response()->json(['token' => $authToken->plainTextToken]);
+        return response()->json([
+            'token' => $authToken->plainTextToken,
+            'userId' => $newUser->id
+        ]);
 
     }
 }
