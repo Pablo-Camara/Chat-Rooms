@@ -88,9 +88,20 @@ export default function Navbar({ authenticated }) {
                     <>
                         {
                             notifications.map((notification, index) => {
-                                return <div className={notificationsStyles.notificationItem}>
-                                    You have a
-                                    new {notification.type} from {notification.fromUser.firstName + ' ' + notification.fromUser.lastName}
+                                return <div key={'notification_' + index} className={notificationsStyles.notificationItem}>
+                                    {
+                                        notification.type === 'chat_message'
+                                        &&
+                                        <>
+                                            New message from
+                                            <b> {
+                                                notification.fromUser.firstName
+                                                + ' '
+                                                + notification.fromUser.lastName
+                                                + ' (' + notification.fromUser.username + ')'
+                                            }</b>
+                                        </>
+                                    }
                                 </div>
                             })
                         }
