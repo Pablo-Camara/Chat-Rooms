@@ -11,11 +11,14 @@ import RegisterPage from './pages/RegisterPage';
 import MainMenuPage from './pages/MainMenuPage';
 import ChatRoomPage from './pages/ChatRoomPage';
 import FindUsersPage from './pages/FindUsersPage';
+import AuthMiddleware from './middleware/AuthMiddleware';
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <MainMenuPage />,
+        element: <AuthMiddleware>
+            <MainMenuPage />
+        </AuthMiddleware>,
     },
     {
         path: "login",
@@ -27,11 +30,15 @@ const router = createBrowserRouter([
     },
     {
         path: "chat",
-        element: <ChatRoomPage />,
+        element: <AuthMiddleware>
+            <ChatRoomPage />
+        </AuthMiddleware>,
     },
     {
         path: "find-users",
-        element: <FindUsersPage />,
+        element: <AuthMiddleware>
+            <FindUsersPage />
+        </AuthMiddleware>,
     }
 ]);
 
