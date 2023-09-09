@@ -1,15 +1,38 @@
 import navbarStyles from '../../css/modules/components/Navbar.module.css';
 import notificationsStyles from '../../css/modules/components/Notifications.module.css';
+import { AuthContext } from '../contexts/AuthContext';
 import Container from './Container';
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
 
 export default function Navbar({ authenticated }) {
     let finalClassName = authenticated ? navbarStyles.authenticatedNavbar : navbarStyles.unauthenticatedNavbar;
     const navigate = useNavigate();
 
-    const [totalNotifications, setTotalNotifications] = useState(2);
+    const { userId } = useContext(AuthContext);
+
+    const [totalNotifications, setTotalNotifications] = useState(0);
+    const [notifications, setNotifications] = useState([]);
+
     const [showNotifications, setShowNotifications] = useState(false);
+
+    if (userId) {
+        window.Echo.private('notifications.' + userId)
+            .listen('NotificationSent', (e) => {
+                const notification = e.notification;
+                let updatedNotifications = notifications.slice();
+                updatedNotifications.unshift({
+                    type: notification.type,
+                    fromUserId: notification.from_user_id,
+                    fromUser: notification.sender,
+                    createdAt: notification.created_at
+                });
+
+                setNotifications(updatedNotifications);
+                setTotalNotifications(totalNotifications+1);
+            });
+    }
+
     return <>
         <div className={finalClassName}>
             {
@@ -59,13 +82,20 @@ export default function Navbar({ authenticated }) {
                         setShowNotifications(false);
                     }}>X</span></div>
 
-                <div className={notificationsStyles.notificationItem}>
-                    You have <b>2</b> new messages from <b>@johndoe</b>
-                </div>
-
-                <div className={notificationsStyles.notificationItem}>
-                    New friend request from <b>@johndoe</b>
-                </div>
+                {
+                    notifications.length > 0
+                    &&
+                    <>
+                        {
+                            notifications.map((notification, index) => {
+                                return <div className={notificationsStyles.notificationItem}>
+                                    You have a
+                                    new {notification.type} from {notification.fromUser.firstName + ' ' + notification.fromUser.lastName}
+                                </div>
+                            })
+                        }
+                    </>
+                }
             </Container>
         }
     </>;

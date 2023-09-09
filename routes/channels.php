@@ -32,3 +32,8 @@ Broadcast::channel('chatRoom.{id}', function (User $user, $id) {
 
     return true;
 });
+
+
+Broadcast::channel('notifications.{id}', function (User $user,int $id) {
+    return $user->id === $id;
+});

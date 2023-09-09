@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\ChatMessageSent;
+use App\Events\NotificationSent;
+use App\Models\Notification;
 use App\Models\User;
 use App\Services\ChatRoomMessageService;
 use App\Services\ChatRoomService;
@@ -69,10 +71,21 @@ class ChatController extends Controller
             $destinationUser
         );
 
-        ChatMessageSent::dispatchIf(
-            !empty($chatRoomMessage),
-            $chatRoomMessage
-        );
+        if(!empty($chatRoomMessage)) {
+            ChatMessageSent::dispatchIf(true, $chatRoomMessage);
+
+            $chatMessageNotification = new Notification();
+            $chatMessageNotification->type = Notification::TYPE_CHAT_MESSAGE;
+            $chatMessageNotification->notification_id = $chatRoomMessage->id;
+            $chatMessageNotification->from_user_id = $user->id;
+            $chatMessageNotification->to_user_id = $destinationUser->id;
+
+            NotificationSent::dispatchIf(
+                $chatMessageNotification->save(),
+                $chatMessageNotification
+            );
+        }
+
 
         $chatRoomMessages = $chatRoom->messages()
             ->latest()
