@@ -19,14 +19,37 @@ export default function Navbar({ authenticated }) {
     if (userId) {
         window.Echo.private('notifications.' + userId)
             .listen('NotificationSent', (e) => {
-                const notification = e.notification;
+                const notificationReceived = e.notification;
                 let updatedNotifications = notifications.slice();
-                updatedNotifications.unshift({
-                    type: notification.type,
-                    fromUserId: notification.from_user_id,
-                    fromUser: notification.sender,
-                    createdAt: notification.created_at
+
+                let notificationTypeIndex = null;
+                updatedNotifications.forEach((notification, index) => {
+                    if (
+                        notificationReceived.type === notification.type
+                        &&
+                        notificationReceived.from_user_id === notification.fromUserId
+                    ) {
+                        notificationTypeIndex = index;
+                        return;
+                    }
                 });
+
+                if (null === notificationTypeIndex) {
+                    updatedNotifications.unshift({
+                        count: 1,
+                        type: notificationReceived.type,
+                        fromUserId: notificationReceived.from_user_id,
+                        fromUser: notificationReceived.sender,
+                        createdAt: notificationReceived.created_at
+                    });
+                } else {
+                    let newNotification = Object.assign({}, updatedNotifications[notificationTypeIndex]);
+                    newNotification.count++;
+                    newNotification.createdAt = notificationReceived.created_at;
+
+                    updatedNotifications.splice(notificationTypeIndex, 1);
+                    updatedNotifications.unshift(newNotification);
+                }
 
                 setNotifications(updatedNotifications);
                 setTotalNotifications(totalNotifications+1);
@@ -97,7 +120,7 @@ export default function Navbar({ authenticated }) {
                                             notification.type === 'chat_message'
                                             &&
                                             <>
-                                                New message from
+                                                <b>{notification.count}</b> new message{notification.count > 1 ? 's' : ''} from
                                                 <b> {
                                                     notification.fromUser.firstName
                                                     + ' '
