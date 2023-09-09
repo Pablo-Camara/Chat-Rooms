@@ -1,8 +1,7 @@
-import { useState, useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
 import Container from "../components/Container";
-import Header from "../components/Header";
 import LinkButton from "../components/LinkButton";
 import Button from "../components/Button";
 import MyFriends from "../components/MyFriends";
