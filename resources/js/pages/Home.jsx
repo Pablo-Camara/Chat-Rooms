@@ -1,22 +1,8 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import React from "react";
 import MainMenuPage from "./MainMenuPage";
-import LoginPage from "./LoginPage";
 
 const Home = () => {
-  const { isLoggedIn } = useContext(AuthContext);
-
-  return <>
-        {
-            !isLoggedIn &&
-            <LoginPage />
-        }
-
-        {
-            isLoggedIn &&
-            <MainMenuPage />
-        }
-  </>;
+  return <MainMenuPage />;
 };
 
 export default Home;

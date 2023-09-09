@@ -4,10 +4,6 @@ import { createContext, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const [authToken, setAuthToken] = useState(
-        localStorage.getItem('authToken')
-    );
-    const [isLoggedIn, setIsLoggedIn] = useState(authToken != null ? true : false);
     const [userId, setUserId] = useState(
         localStorage.getItem('UID')
     );
@@ -30,11 +26,9 @@ export const AuthContextProvider = ({ children }) => {
         }
 
         if (response.status === 200) {
-            setIsLoggedIn(true);
-            setAuthToken(response.data.token);
             localStorage.setItem('authToken', response.data.token);
-            setUserId(response.data.userId);
             localStorage.setItem('UID', response.data.userId);
+            setUserId(response.data.userId);
             if (typeof successCallback === 'function') {
                 successCallback();
             }
@@ -50,9 +44,9 @@ export const AuthContextProvider = ({ children }) => {
         const response = await axios.post('/api/logout');
 
         if (response.status === 200) {
-            setIsLoggedIn(false);
-            setAuthToken(null);
             localStorage.removeItem('authToken');
+            localStorage.removeItem('UID');
+            setUserId(null);
             if (typeof callback === 'function') {
                 callback();
             }
@@ -93,11 +87,9 @@ export const AuthContextProvider = ({ children }) => {
 
         if (response.status === 200) {
             if(response.data.token) {
-                setIsLoggedIn(true);
-                setAuthToken(response.data.token);
                 localStorage.setItem('authToken', response.data.token);
-                setUserId(response.data.userId);
                 localStorage.setItem('UID', response.data.userId);
+                setUserId(response.data.userId);
                 if (typeof successCallback === 'function') {
                     successCallback();
                 }
@@ -113,7 +105,7 @@ export const AuthContextProvider = ({ children }) => {
     return (
       <AuthContext.Provider
         value={{
-            isLoggedIn, authToken, userId, login, logout, register
+            userId, login, logout, register
         }}
       >
         {children}

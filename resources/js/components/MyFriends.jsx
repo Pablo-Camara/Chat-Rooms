@@ -1,22 +1,17 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import UserListItem from "./UserListItem";
-import { AuthContext } from "../contexts/AuthContext";
 import Header from "./Header";
 import Text from "./Text";
 
 export default function MyFriends () {
     const [ isLoadingFriends, setIsLoadingFriends ] = useState(true);
     const [ friends, setFriends ] = useState([]);
-    const { authToken } = useContext(AuthContext);
 
     useEffect(() => {
         // fetch friends
         axios({
             method: 'GET',
-            url: '/api/friends',
-            headers: {
-              'Authorization': `Bearer ${authToken}`,
-            },
+            url: '/api/friends'
         })
         .then(response => {
             const responseData = response.data;

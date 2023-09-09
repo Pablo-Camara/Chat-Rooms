@@ -1,5 +1,4 @@
-import { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Container from "../components/Container";
 import TextBox from "../components/TextBox";
@@ -8,7 +7,6 @@ import Navbar from "../components/Navbar";
 import UserListItem from "../components/UserListItem";
 
 const FindUsersPage = () => {
-    const { authToken } = useContext(AuthContext);
     const [searchInput, setSearchInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [hasSearchError, setHasSearchError] = useState(false);
@@ -27,9 +25,6 @@ const FindUsersPage = () => {
             axios({
                 method: 'POST',
                 url: '/api/find-users',
-                headers: {
-                  'Authorization': `Bearer ${authToken}`,
-                },
                 data: {
                     searchInput
                 }

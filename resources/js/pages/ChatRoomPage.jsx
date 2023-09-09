@@ -1,14 +1,12 @@
 import Container from "../components/Container";
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
-import { useNavigate } from "react-router";
 import Header from "../components/Header";
 import headerStyles from '../../css/modules/components/Header.module.css';
 import txtStyles from '../../css/modules/components/Text.module.css';
 import txtBoxStyles from '../../css/modules/components/TextBox.module.css';
 import containerStyles from '../../css/modules/components/Container.module.css';
 import Text from "../components/Text";
-import { AuthContext } from "../contexts/AuthContext";
 import HorizontalSeparator from "../components/HorizontalSeparator";
 import UserName from "../components/UserName";
 import TextArea from "../components/TextArea";
@@ -23,10 +21,6 @@ const ChatRoomPage = () => {
 
     const isPrivateChat = (userId && !roomId);
     const isChatRoom = (roomId && !userId);
-
-    const navigate = useNavigate();
-
-    const { authToken } = useContext(AuthContext);
 
     const [ user, setUser ] = useState(null);
     const [ destinationUser, setDestinationUser ] = useState(null);
@@ -66,10 +60,7 @@ const ChatRoomPage = () => {
         // fetch friends
         axios({
             method: 'GET',
-            url: '/api/chat/' + userId,
-            headers: {
-              'Authorization': `Bearer ${authToken}`,
-            },
+            url: '/api/chat/' + userId
         })
         .then(response => {
             const responseData = response.data;
@@ -90,9 +81,6 @@ const ChatRoomPage = () => {
         axios({
             method: 'POST',
             url: '/api/chat/' + userId + '/msg',
-            headers: {
-              'Authorization': `Bearer ${authToken}`,
-            },
             data: {
                 message
             }

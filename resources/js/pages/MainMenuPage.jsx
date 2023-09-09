@@ -11,15 +11,8 @@ import Navbar from "../components/Navbar";
 
 
 const MainMenuPage = () => {
-  const { isLoggedIn, logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-        navigate('/login');
-        return;
-    }
-  }, []);
 
   const logoutAttempt = () => {
     logout(() => {
@@ -67,12 +60,8 @@ const MainMenuPage = () => {
                 marginTop: '13px'
             }}>Find other users</Button>
 
+        <MyFriends />
 
-        {
-            isLoggedIn
-            &&
-            <MyFriends />
-        }
     </Container>
   </>;
 };
