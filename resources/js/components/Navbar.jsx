@@ -88,20 +88,24 @@ export default function Navbar({ authenticated }) {
                     <>
                         {
                             notifications.map((notification, index) => {
-                                return <div key={'notification_' + index} className={notificationsStyles.notificationItem}>
-                                    {
-                                        notification.type === 'chat_message'
-                                        &&
-                                        <>
-                                            New message from
-                                            <b> {
-                                                notification.fromUser.firstName
-                                                + ' '
-                                                + notification.fromUser.lastName
-                                                + ' (' + notification.fromUser.username + ')'
-                                            }</b>
-                                        </>
-                                    }
+                                return <div key={'notification_' + index}
+                                    className={notificationsStyles.notificationItem}
+                                    onClick={() => {
+                                        navigate('/chat?userId=' + notification.fromUserId);
+                                    }}>
+                                        {
+                                            notification.type === 'chat_message'
+                                            &&
+                                            <>
+                                                New message from
+                                                <b> {
+                                                    notification.fromUser.firstName
+                                                    + ' '
+                                                    + notification.fromUser.lastName
+                                                    + ' (' + notification.fromUser.username + ')'
+                                                }</b>
+                                            </>
+                                        }
                                 </div>
                             })
                         }
