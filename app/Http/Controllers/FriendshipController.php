@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Friendship;
 use Illuminate\Http\Request;
 
-class FriendsController extends Controller
+class FriendshipController extends Controller
 {
     //
     public function myFriends(Request $request)
