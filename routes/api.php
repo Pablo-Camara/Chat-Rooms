@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ChatController;
-use App\Http\Controllers\FriendshipController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\ChatRoomMessagesController;
+use App\Http\Controllers\ChatRoomsController;
+use App\Http\Controllers\FriendshipsController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,11 +25,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::post('/logout', [ AuthController::class, 'logout' ]);
-    Route::get('/friends', [ FriendshipController::class, 'myFriends' ]);
-    Route::post('/find-users', [ UserController::class, 'findUsers' ]);
+    Route::get('/friends', [ FriendshipsController::class, 'myFriends' ]);
+    Route::post('/find-users', [ UsersController::class, 'findUsers' ]);
 
-    Route::get('/chat/{userId}', [ ChatController::class, 'privateChat' ]);
-    Route::post('/chat/{userId}/msg', [ ChatController::class, 'sendPrivateChatMessage' ]);
+    Route::get('/chat/{userId}', [ ChatRoomsController::class, 'privateChat' ]);
+    Route::post('/chat/{userId}/msg', [ ChatRoomMessagesController::class, 'sendPrivateChatMessage' ]);
 });
 
 Route::post('/login', [ AuthController::class, 'login' ]);
