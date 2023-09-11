@@ -57,6 +57,17 @@ const ChatRoomPage = () => {
         });
     };
 
+    const scrollableChatMessagesContainer = useRef(null);
+
+    useEffect(() => {
+        if (scrollableChatMessagesContainer && !isLoadingChat) {
+            const scrollableContainer = scrollableChatMessagesContainer.current;
+            if (scrollableContainer) {
+                scrollableContainer.scrollTop = 8;
+            }
+        }
+    }, [scrollableChatMessagesContainer, isLoadingChat]);
+
     // opening/fetching chat data when:
     // - no longer private chattting
     // - destination user changes
@@ -142,7 +153,6 @@ const ChatRoomPage = () => {
         });
     };
 
-    const scrollableChatMessagesContainer = useRef(null);
 
     const handleChatScroll = () => {
         const scrollableContainer = scrollableChatMessagesContainer.current;
