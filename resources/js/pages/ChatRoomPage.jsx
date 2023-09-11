@@ -60,6 +60,7 @@ const ChatRoomPage = () => {
     const listenToChatEvents = () => {
         window.Echo.private('chatRoom.' + chatRoomId)
             .listen('ChatMessageSent', (e) => {
+                console.log('ChatMessageSent', e);
                 let chatRoomMsg = e.chatRoomMessage;
                 let updatedChatMessages = chatMessages.slice();
                 updatedChatMessages.push({

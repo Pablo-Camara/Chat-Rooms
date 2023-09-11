@@ -21,50 +21,51 @@ export default function Navbar({ authenticated }) {
 
     const [showNotifications, setShowNotifications] = useState(false);
 
-    if (userId) {
+    const listenToNotificationEvents = () => {
         window.Echo.private('notifications.' + userId)
-            .listen('NotificationSent', (e) => {
-                const notificationReceived = e.notification;
-                let updatedNotifications = notifications.slice();
+        .listen('NotificationSent', (e) => {
+            console.log('NotificationSent', e);
+            const notificationReceived = e.notification;
+            let updatedNotifications = notifications.slice();
 
-                let notificationTypeIndex = null;
-                updatedNotifications.forEach((notification, index) => {
-                    if (
-                        notificationReceived.type === notification.type
-                        &&
-                        notificationReceived.from_user_id === notification.from_user_id
-                    ) {
-                        notificationTypeIndex = index;
-                        return;
-                    }
-                });
-
-                if (null === notificationTypeIndex) {
-                    updatedNotifications.unshift({
-                        count: 1,
-                        type: notificationReceived.type,
-                        from_user_id: notificationReceived.from_user_id,
-                        sender: notificationReceived.sender,
-                        created_at: notificationReceived.created_at
-                    });
-                } else {
-                    let newNotification = Object.assign({}, updatedNotifications[notificationTypeIndex]);
-                    newNotification.count++;
-                    newNotification.created_at = notificationReceived.created_at;
-
-                    updatedNotifications.splice(notificationTypeIndex, 1);
-                    updatedNotifications.unshift(newNotification);
-                }
-
-                setNotifications(updatedNotifications);
-
-                if (null === notificationTypeIndex) {
-                    setTotalNotifications(totalNotifications+1);
-                } else {
-                    setTotalNotifications(updatedNotifications.length);
+            let notificationTypeIndex = null;
+            updatedNotifications.forEach((notification, index) => {
+                if (
+                    notificationReceived.type === notification.type
+                    &&
+                    notificationReceived.from_user_id === notification.from_user_id
+                ) {
+                    notificationTypeIndex = index;
+                    return;
                 }
             });
-    }
+
+            if (null === notificationTypeIndex) {
+                updatedNotifications.unshift({
+                    count: 1,
+                    type: notificationReceived.type,
+                    from_user_id: notificationReceived.from_user_id,
+                    sender: notificationReceived.sender,
+                    created_at: notificationReceived.created_at
+                });
+            } else {
+                let newNotification = Object.assign({}, updatedNotifications[notificationTypeIndex]);
+                newNotification.count++;
+                newNotification.created_at = notificationReceived.created_at;
+
+                updatedNotifications.splice(notificationTypeIndex, 1);
+                updatedNotifications.unshift(newNotification);
+            }
+
+            setNotifications(updatedNotifications);
+
+            if (null === notificationTypeIndex) {
+                setTotalNotifications(totalNotifications+1);
+            } else {
+                setTotalNotifications(updatedNotifications.length);
+            }
+        });
+    };
 
     useEffect(() => {
         // fetch notifications
@@ -82,6 +83,12 @@ export default function Navbar({ authenticated }) {
             console.error('Error:', error);
         });
     }, []);
+
+    useEffect(() => {
+        if (userId) {
+            listenToNotificationEvents();
+        }
+    }, [userId])
 
     return <>
         <div className={finalClassName}>
