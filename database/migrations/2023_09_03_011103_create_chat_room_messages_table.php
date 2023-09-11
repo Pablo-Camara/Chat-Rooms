@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('message', 255);
             $table->unsignedBigInteger('sender_id')->nullable();
             $table->unsignedBigInteger('receiver_id')->nullable();
+            $table->dateTime('viewed_at')->nullable();
             $table->timestamps();
 
             $table->foreign('chat_room_id')->references('id')->on('chat_rooms')->onDelete('cascade');

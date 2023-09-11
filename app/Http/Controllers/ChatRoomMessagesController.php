@@ -54,12 +54,7 @@ class ChatRoomMessagesController extends Controller
             );
         }
 
-
-        $chatRoomMessages = $chatRoom->messages()
-            ->latest()
-            ->paginate(5)
-            ->items();
-        $chatRoomMessages = array_reverse($chatRoomMessages);
+        $chatRoomMessages = ChatRoomMessageService::readChatRoomMessages($chatRoom);
 
         return response()->json(
             ChatRoomService::getPrivateChatRoomResponseData(

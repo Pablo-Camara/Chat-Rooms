@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ChatMessageSent;
-use App\Events\NotificationSent;
-use App\Models\Notification;
 use App\Models\User;
 use App\Services\ChatRoomMessageService;
 use App\Services\ChatRoomService;
@@ -29,11 +26,7 @@ class ChatRoomsController extends Controller
             return;
         }
 
-        $chatRoomMessages = $chatRoom->messages()
-            ->latest()
-            ->paginate(5)
-            ->items();
-        $chatRoomMessages = array_reverse($chatRoomMessages);
+        $chatRoomMessages = ChatRoomMessageService::readChatRoomMessages($chatRoom);
 
         return response()->json(
             ChatRoomService::getPrivateChatRoomResponseData(

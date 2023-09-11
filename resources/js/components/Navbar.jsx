@@ -85,13 +85,52 @@ export default function Navbar({ authenticated }) {
                 }
             };
 
+            const chatMessageViewedCallback = (e) => {
+                console.log('ChatMessageViewed', e);
+
+                const chatMsgReceived = e.chatRoomMessage;
+                let updatedNotifications = notifications.slice();
+
+                console.log(chatMsgReceived, updatedNotifications);
+
+                if (updatedNotifications.length > 0) {
+                    let indexToDecrement = null;
+                    updatedNotifications.forEach((notification, index) => {
+                        if (
+                            notification.type === 'chat_message'
+                            &&
+                            notification.from_user_id === chatMsgReceived.sender_id
+                        ) {
+                            indexToDecrement = index;
+                            return;
+                        }
+                    });
+
+                    if (indexToDecrement >= 0) {
+                        if (
+                            updatedNotifications[indexToDecrement].count <= 1
+                        ) {
+                            updatedNotifications.splice(indexToDecrement, 1);
+                        } else {
+                            updatedNotifications[indexToDecrement].count--;
+                        }
+                    }
+
+                }
+
+                setNotifications(updatedNotifications);
+                setTotalNotifications(updatedNotifications.length);
+            };
+
             channel.listen('NotificationSent', notificationSentCallback);
+            channel.listen('ChatMessageViewed', chatMessageViewedCallback);
 
             return () => {
                 channel.stopListening('NotificationSent', notificationSentCallback);
+                channel.stopListening('ChatMessageViewed', chatMessageViewedCallback);
             };
         }
-    }, [userId])
+    }, [userId, notifications])
 
     return <>
         <div className={finalClassName}>
