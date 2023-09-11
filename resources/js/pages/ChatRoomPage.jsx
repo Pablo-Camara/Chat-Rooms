@@ -117,7 +117,7 @@ const ChatRoomPage = () => {
                 channel.stopListening('ChatMessageSent', chatMessageSentCallback);
             };
         }
-    }, [chatRoomId]);
+    }, [chatRoomId, chatMessages]);
 
     const sendChatMessage = (message) => {
         axios({
