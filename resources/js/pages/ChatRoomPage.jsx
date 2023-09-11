@@ -178,15 +178,16 @@ const ChatRoomPage = () => {
             }
 
             <HorizontalSeparator style={{
-                marginTop: '16px',
-                marginBottom: '10px'
+                marginTop: '16px'
             }}/>
 
             {
                 isLoadingChat
                 &&
                 <Text style={{
-                    color: 'gray'
+                    color: 'gray',
+                    marginTop: '10px',
+                    marginBottom: '10px'
                 }}>
                     Loading chat..
                 </Text>
@@ -198,7 +199,9 @@ const ChatRoomPage = () => {
                 chatMessages.length == 0
                 &&
                 <Text style={{
-                    color: 'gray'
+                    color: 'gray',
+                    marginTop: '10px',
+                    marginBottom: '10px'
                 }}>
                     This chat is empty
                 </Text>
@@ -209,7 +212,11 @@ const ChatRoomPage = () => {
                 &&
                 chatMessages.length > 0
                 &&
-                <>
+                <Container style={{
+                    height: '300px',
+                    overflow: 'auto',
+                    paddingBottom: '14px'
+                }}>
                     {
                         chatMessages.map((chatMessage, index) => {
                             const createdAtDate = (new Date(chatMessage.dateSent)).toLocaleString();
@@ -270,12 +277,10 @@ const ChatRoomPage = () => {
                             </Container>
                         })
                     }
-                </>
+                </Container>
             }
 
-            <HorizontalSeparator style={{
-                marginTop: '26px'
-            }}/>
+            <HorizontalSeparator />
 
             {
                 !isLoadingChat
