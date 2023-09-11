@@ -57,30 +57,6 @@ const ChatRoomPage = () => {
         });
     };
 
-    const listenToChatEvents = () => {
-        window.Echo.private('chatRoom.' + chatRoomId)
-            .listen('ChatMessageSent', (e) => {
-                console.log('ChatMessageSent', e);
-                let chatRoomMsg = e.chatRoomMessage;
-                let updatedChatMessages = chatMessages.slice();
-                updatedChatMessages.push({
-                    messageId: chatRoomMsg.id,
-                    message: chatRoomMsg.message,
-                    dateSent: chatRoomMsg.created_at,
-                    sender: {
-                        id: chatRoomMsg.sender.id,
-                        username: chatRoomMsg.sender.username,
-                    },
-                    receiver: {
-                        id: chatRoomMsg.receiver.id,
-                        username: chatRoomMsg.receiver.username,
-                    }
-                });
-
-                setChatMessages(updatedChatMessages);
-            });
-    };
-
     // opening/fetching chat data when:
     // - no longer private chattting
     // - destination user changes
@@ -114,7 +90,33 @@ const ChatRoomPage = () => {
 
     useEffect(() => {
         if (chatRoomId) {
-            listenToChatEvents();
+            let channel = window.Echo.private('chatRoom.' + chatRoomId);
+
+            const chatMessageSentCallback = (e) => {
+                console.log('ChatMessageSent', e);
+                let chatRoomMsg = e.chatRoomMessage;
+                let updatedChatMessages = chatMessages.slice();
+                updatedChatMessages.push({
+                    messageId: chatRoomMsg.id,
+                    message: chatRoomMsg.message,
+                    dateSent: chatRoomMsg.created_at,
+                    sender: {
+                        id: chatRoomMsg.sender.id,
+                        username: chatRoomMsg.sender.username,
+                    },
+                    receiver: {
+                        id: chatRoomMsg.receiver.id,
+                        username: chatRoomMsg.receiver.username,
+                    }
+                });
+
+                setChatMessages(updatedChatMessages);
+            };
+
+            channel.listen('ChatMessageSent', chatMessageSentCallback);
+            return () => {
+                channel.stopListening('ChatMessageSent', chatMessageSentCallback);
+            };
         }
     }, [chatRoomId]);
 
