@@ -26,7 +26,7 @@ class ChatRoomsController extends Controller
             return;
         }
 
-        $chatRoomMessages = ChatRoomMessageService::readChatRoomMessages($chatRoom);
+        $chatRoomMessages = ChatRoomMessageService::readPrivateChatRoomMessages($chatRoom);
 
         return response()->json(
             ChatRoomService::getPrivateChatRoomResponseData(

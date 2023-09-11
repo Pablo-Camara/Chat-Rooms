@@ -26,7 +26,7 @@ class ChatRoomMessageService {
         return null;
     }
 
-    public static function readChatRoomMessages(
+    public static function readPrivateChatRoomMessages(
         $chatRoom
     ) {
         $chatRoomMessages = $chatRoom->messages()
