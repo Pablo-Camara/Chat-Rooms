@@ -20,8 +20,8 @@ const ChatRoomPage = () => {
     const userId = queryParams.get('userId');
 
     const {
-        isPrivateChat,
-        chattingWithUserId
+        isPrivateChat, setIsPrivateChat,
+        chattingWithUserId, setChattingWithUserId
     } = useContext(ChatRoomContext);
 
     const [ user, setUser ] = useState(null);
@@ -48,6 +48,8 @@ const ChatRoomPage = () => {
             setChatRoomTitle(responseData.chatRoom.title);
             setChatMessages(responseData.chatRoom.messages);
             setIsLoadingChat(false);
+            setIsPrivateChat(true);
+            setChattingWithUserId(responseData.destinationUser.id);
         })
         .catch(error => {
             // Handle any errors that occur during the request.
@@ -83,7 +85,19 @@ const ChatRoomPage = () => {
     // - destination user changes
     useEffect(
         () => {
-            if (isPrivateChat && chattingWithUserId) {
+            if (
+                isPrivateChat && chattingWithUserId
+                &&
+                (
+                    (
+                        destinationUser
+                        &&
+                        chattingWithUserId !== destinationUser.id
+                    )
+                    ||
+                    !destinationUser
+                )
+            ) {
                 fetchPrivateChatInfo(chattingWithUserId);
             }
         },
