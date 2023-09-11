@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatRoomMessagesController;
 use App\Http\Controllers\ChatRoomsController;
 use App\Http\Controllers\FriendshipsController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::post('/logout', [ AuthController::class, 'logout' ]);
+    Route::get('/notifications', [ NotificationsController::class, 'myNotifications' ]);
     Route::get('/friends', [ FriendshipsController::class, 'myFriends' ]);
     Route::post('/find-users', [ UsersController::class, 'findUsers' ]);
 

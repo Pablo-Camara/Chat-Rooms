@@ -2,7 +2,7 @@ import navbarStyles from '../../css/modules/components/Navbar.module.css';
 import notificationsStyles from '../../css/modules/components/Notifications.module.css';
 import { AuthContext } from '../contexts/AuthContext';
 import Container from './Container';
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
 
 export default function Navbar({ authenticated }) {
@@ -27,7 +27,7 @@ export default function Navbar({ authenticated }) {
                     if (
                         notificationReceived.type === notification.type
                         &&
-                        notificationReceived.from_user_id === notification.fromUserId
+                        notificationReceived.from_user_id === notification.from_user_id
                     ) {
                         notificationTypeIndex = index;
                         return;
@@ -38,14 +38,14 @@ export default function Navbar({ authenticated }) {
                     updatedNotifications.unshift({
                         count: 1,
                         type: notificationReceived.type,
-                        fromUserId: notificationReceived.from_user_id,
-                        fromUser: notificationReceived.sender,
-                        createdAt: notificationReceived.created_at
+                        from_user_id: notificationReceived.from_user_id,
+                        sender: notificationReceived.sender,
+                        created_at: notificationReceived.created_at
                     });
                 } else {
                     let newNotification = Object.assign({}, updatedNotifications[notificationTypeIndex]);
                     newNotification.count++;
-                    newNotification.createdAt = notificationReceived.created_at;
+                    newNotification.created_at = notificationReceived.created_at;
 
                     updatedNotifications.splice(notificationTypeIndex, 1);
                     updatedNotifications.unshift(newNotification);
@@ -55,6 +55,23 @@ export default function Navbar({ authenticated }) {
                 setTotalNotifications(totalNotifications+1);
             });
     }
+
+    useEffect(() => {
+        // fetch notifications
+        axios({
+            method: 'GET',
+            url: '/api/notifications'
+        })
+        .then(response => {
+            const responseData = response.data;
+            setNotifications(responseData);
+            setTotalNotifications(responseData.length);
+        })
+        .catch(error => {
+            // Handle any errors that occur during the request.
+            console.error('Error:', error);
+        });
+    }, []);
 
     return <>
         <div className={finalClassName}>
@@ -114,7 +131,7 @@ export default function Navbar({ authenticated }) {
                                 return <div key={'notification_' + index}
                                     className={notificationsStyles.notificationItem}
                                     onClick={() => {
-                                        navigate('/chat?userId=' + notification.fromUserId);
+                                        navigate('/chat?userId=' + notification.from_user_id);
                                     }}>
                                         {
                                             notification.type === 'chat_message'
@@ -122,10 +139,10 @@ export default function Navbar({ authenticated }) {
                                             <>
                                                 <b>{notification.count}</b> new message{notification.count > 1 ? 's' : ''} from
                                                 <b> {
-                                                    notification.fromUser.firstName
+                                                    notification.sender.firstName
                                                     + ' '
-                                                    + notification.fromUser.lastName
-                                                    + ' (' + notification.fromUser.username + ')'
+                                                    + notification.sender.lastName
+                                                    + ' (' + notification.sender.username + ')'
                                                 }</b>
                                             </>
                                         }
