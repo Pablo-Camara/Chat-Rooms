@@ -27,13 +27,45 @@ class ChatRoomMessageService {
     }
 
     public static function readPrivateChatRoomMessages(
-        $chatRoom
+        $chatRoom,
+        $maxMessages = 5
     ) {
-        $chatRoomMessages = $chatRoom->messages()
-            ->latest()
-            ->paginate(5)
-            ->items();
-        $chatRoomMessages = array_reverse($chatRoomMessages);
+        $userReading = auth()->user();
+
+        $firstUnreadChatRoomMessage = $chatRoom->messages()
+            ->where('chat_room_id', $chatRoom->id)
+            ->where('sender_id', '!=', $userReading->id)
+            ->whereNull('viewed_at')
+            ->first();
+
+        $reverse = true;
+        if (!empty($firstUnreadChatRoomMessage)) {
+            $firstFetch = $chatRoom->messages()->where('id', '>=', $firstUnreadChatRoomMessage->id)
+                ->orderBy('id')
+                ->paginate($maxMessages)
+                ->items();
+            $missingCount = $maxMessages-count($firstFetch);
+
+            $missingFetch = [];
+            if ($missingCount > 0) {
+                $missingFetch = $chatRoom->messages()->where('id', '<', $firstUnreadChatRoomMessage->id)
+                    ->orderByDesc('id')
+                    ->paginate($missingCount)
+                    ->items();
+            }
+
+            $chatRoomMessages = array_merge(array_reverse($missingFetch), $firstFetch);
+            $reverse = false;
+        } else {
+            $chatRoomMessages = $chatRoom->messages()
+                ->latest()
+                ->paginate($maxMessages)
+                ->items();
+        }
+
+        if ($reverse) {
+            $chatRoomMessages = array_reverse($chatRoomMessages);
+        }
         self::markChatRoomMessagesAsRead($chatRoomMessages);
         return $chatRoomMessages;
     }
