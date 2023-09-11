@@ -146,6 +146,16 @@ const ChatRoomPage = () => {
             setChatRoomTitle(responseData.chatRoom.title);
             setChatMessages(responseData.chatRoom.messages);
             setCurrentMessage('');
+
+            if (scrollableChatMessagesContainer) {
+                const scrollableContainer = scrollableChatMessagesContainer.current;
+                const lastPossibleScrollPosition =
+                    scrollableContainer.scrollHeight - scrollableContainer.clientHeight;
+                if (scrollableContainer) {
+                    scrollableContainer.scrollTop = lastPossibleScrollPosition-8;
+                }
+            }
+
         })
         .catch(error => {
             // Handle any errors that occur during the request.
@@ -158,7 +168,7 @@ const ChatRoomPage = () => {
         const scrollableContainer = scrollableChatMessagesContainer.current;
 
         const lastPossibleScrollPosition =
-        scrollableContainer.scrollHeight - scrollableContainer.clientHeight;
+            scrollableContainer.scrollHeight - scrollableContainer.clientHeight;
 
         console.log(scrollableContainer.scrollTop, lastPossibleScrollPosition);
 
