@@ -1,11 +1,18 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router";
 import Button from "./Button";
 import Container from "./Container";
 import Text from "./Text";
 import styles from '../../css/modules/components/UserListItem.module.css';
 import UserName from "./UserName";
+import { ChatRoomContext } from "../contexts/ChatRoomContext";
 export default function UserListItem({style, user}) {
     const navigate = useNavigate();
+
+    const {
+        setIsPrivateChat,
+        setChattingWithUserId
+    } = useContext(ChatRoomContext);
 
     return <>
         <div className={styles.boxItem} style={{...style}}>
@@ -25,7 +32,11 @@ export default function UserListItem({style, user}) {
                 textAlign: 'right'
             }}>
                 <Button
-                    onClick={() => navigate('/chat?userId=' + user.id)}
+                    onClick={() => {
+                        setIsPrivateChat(true);
+                        setChattingWithUserId(user.id);
+                        navigate('/chat?userId=' + user.id)
+                    }}
                     style={{
                         width: '120px',
                         display: 'inline-block',
