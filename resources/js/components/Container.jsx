@@ -1,10 +1,10 @@
 import styles from '../../css/modules/components/Container.module.css';
 
-export default function Container({className, style, children}) {
+export default function Container({className, style, children, elRef, onScroll}) {
     let finalClassName = className ? className : styles.container;
-    return <>
-        <div className={finalClassName} style={{...style}}>
-            {children}
-        </div>
-    </>;
+    elRef = 'undefined' !== elRef ? elRef : null;
+    onScroll = 'undefined' !== onScroll ? onScroll : null;
+    return <div ref={elRef} className={finalClassName} style={{...style}} onScroll={onScroll}>
+        {children}
+    </div>;
 }

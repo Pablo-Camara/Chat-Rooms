@@ -1,5 +1,5 @@
 import Container from "../components/Container";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import Header from "../components/Header";
 import headerStyles from '../../css/modules/components/Header.module.css';
@@ -142,6 +142,30 @@ const ChatRoomPage = () => {
         });
     };
 
+    const scrollableChatMessagesContainer = useRef(null);
+
+    const handleChatScroll = () => {
+        const scrollableContainer = scrollableChatMessagesContainer.current;
+
+        const lastPossibleScrollPosition =
+        scrollableContainer.scrollHeight - scrollableContainer.clientHeight;
+
+        console.log(scrollableContainer.scrollTop, lastPossibleScrollPosition);
+
+        // Check if the user has scrolled to the top
+        if (scrollableContainer.scrollTop === 0) {
+            console.log('Reached the top of the scroll - first item: ' + chatMessages[0].messageId);
+            // Do something when reaching the top
+        }
+
+
+         // Check if the user has scrolled to the bottom
+         if (scrollableContainer.scrollTop === lastPossibleScrollPosition) {
+            console.log('Reached the bottom of the scroll - last item: ' + (chatMessages.length > 0 ? chatMessages[chatMessages.length-1].messageId : 'none'));
+            // Do something when reaching the top
+        }
+    };
+
     return <>
         <Navbar authenticated={true}/>
         <Container>
@@ -212,11 +236,14 @@ const ChatRoomPage = () => {
                 &&
                 chatMessages.length > 0
                 &&
-                <Container style={{
-                    height: '300px',
-                    overflow: 'auto',
-                    paddingBottom: '14px'
-                }}>
+                <Container elRef={scrollableChatMessagesContainer}
+                    onScroll={handleChatScroll}
+                    style={{
+                        height: '300px',
+                        overflow: 'auto',
+                        paddingBottom: '14px'
+                    }}
+                >
                     {
                         chatMessages.map((chatMessage, index) => {
                             const createdAtDate = (new Date(chatMessage.dateSent)).toLocaleString();
