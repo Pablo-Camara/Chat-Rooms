@@ -85,7 +85,7 @@ class ChatRoomService {
                 'username' => $user->username,
             ],
             'destinationUser' => [
-                'id' => $user->id,
+                'id' => $destinationUser->id,
                 'firstName' => $destinationUser->firstName,
                 'lastName' => $destinationUser->lastName,
                 'username' => $destinationUser->username,

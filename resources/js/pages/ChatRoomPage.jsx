@@ -1,5 +1,5 @@
 import Container from "../components/Container";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useLocation } from 'react-router-dom';
 import Header from "../components/Header";
 import headerStyles from '../../css/modules/components/Header.module.css';
@@ -12,15 +12,17 @@ import UserName from "../components/UserName";
 import TextArea from "../components/TextArea";
 import Button from "../components/Button";
 import Navbar from "../components/Navbar";
+import { ChatRoomContext } from "../contexts/ChatRoomContext";
 
 const ChatRoomPage = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const roomId = queryParams.get('roomId');
     const userId = queryParams.get('userId');
 
-    const isPrivateChat = (userId && !roomId);
-    const isChatRoom = (roomId && !userId);
+    const {
+        isPrivateChat,
+        chattingWithUserId
+    } = useContext(ChatRoomContext);
 
     const [ user, setUser ] = useState(null);
     const [ destinationUser, setDestinationUser ] = useState(null);
@@ -31,7 +33,29 @@ const ChatRoomPage = () => {
     const [ chatMessages, setChatMessages ] = useState([]);
     const [ isLoadingChat, setIsLoadingChat ] = useState(true);
 
-    if (chatRoomId) {
+    const fetchPrivateChatInfo = (userId) => {
+        // fetch chat information
+        setIsLoadingChat(true);
+        axios({
+            method: 'GET',
+            url: '/api/chat/' + userId
+        })
+        .then(response => {
+            const responseData = response.data;
+            setUser(responseData.user);
+            setDestinationUser(responseData.destinationUser);
+            setChatRoomId(responseData.chatRoom.id);
+            setChatRoomTitle(responseData.chatRoom.title);
+            setChatMessages(responseData.chatRoom.messages);
+            setIsLoadingChat(false);
+        })
+        .catch(error => {
+            // Handle any errors that occur during the request.
+            console.error('Error:', error);
+        });
+    };
+
+    const listenToChatEvents = () => {
         window.Echo.private('chatRoom.' + chatRoomId)
             .listen('ChatMessageSent', (e) => {
                 let chatRoomMsg = e.chatRoomMessage;
@@ -52,35 +76,37 @@ const ChatRoomPage = () => {
 
                 setChatMessages(updatedChatMessages);
             });
-    }
+    };
 
+    // opening/fetching chat data when:
+    // - no longer private chattting
+    // - destination user changes
+    useEffect(
+        () => {
+            if (isPrivateChat && chattingWithUserId) {
+                fetchPrivateChatInfo(chattingWithUserId);
+            }
+        },
+        [isPrivateChat, chattingWithUserId]
+    );
 
+    // opening private chat with user by url:
+    useEffect(() => {
+        if (userId && (userId != chattingWithUserId)) {
+            fetchPrivateChatInfo(userId);
+        }
+    }, []);
 
-    isPrivateChat && useEffect(() => {
-        // fetch friends
-        axios({
-            method: 'GET',
-            url: '/api/chat/' + userId
-        })
-        .then(response => {
-            const responseData = response.data;
-            setUser(responseData.user);
-            setDestinationUser(responseData.destinationUser);
-            setChatRoomId(responseData.chatRoom.id);
-            setChatRoomTitle(responseData.chatRoom.title);
-            setChatMessages(responseData.chatRoom.messages);
-            setIsLoadingChat(false);
-        })
-        .catch(error => {
-            // Handle any errors that occur during the request.
-            console.error('Error:', error);
-        });
-      }, []);
+    useEffect(() => {
+        if (chatRoomId) {
+            listenToChatEvents();
+        }
+    }, [chatRoomId]);
 
     const sendChatMessage = (message) => {
         axios({
             method: 'POST',
-            url: '/api/chat/' + userId + '/msg',
+            url: '/api/chat/' + chattingWithUserId + '/msg',
             data: {
                 message
             }
@@ -128,7 +154,7 @@ const ChatRoomPage = () => {
             {
                 !isLoadingChat
                 &&
-                isChatRoom
+                !isPrivateChat
                 &&
                 <Text className={txtStyles.chatTitle}>
                     {chatRoomTitle}

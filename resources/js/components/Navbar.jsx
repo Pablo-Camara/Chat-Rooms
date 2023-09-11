@@ -4,12 +4,17 @@ import { AuthContext } from '../contexts/AuthContext';
 import Container from './Container';
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { ChatRoomContext } from '../contexts/ChatRoomContext';
 
 export default function Navbar({ authenticated }) {
     let finalClassName = authenticated ? navbarStyles.authenticatedNavbar : navbarStyles.unauthenticatedNavbar;
     const navigate = useNavigate();
 
     const { userId } = useContext(AuthContext);
+    const {
+        setIsPrivateChat,
+        setChattingWithUserId
+    } = useContext(ChatRoomContext);
 
     const [totalNotifications, setTotalNotifications] = useState(0);
     const [notifications, setNotifications] = useState([]);
@@ -136,7 +141,12 @@ export default function Navbar({ authenticated }) {
                                 return <div key={'notification_' + index}
                                     className={notificationsStyles.notificationItem}
                                     onClick={() => {
-                                        navigate('/chat?userId=' + notification.from_user_id);
+                                        if (notification.type === 'chat_message') {
+                                            setIsPrivateChat(true);
+                                            setChattingWithUserId(notification.from_user_id);
+                                            setShowNotifications(false);
+                                            navigate('/chat?userId=' + notification.from_user_id);
+                                        }
                                     }}>
                                         {
                                             notification.type === 'chat_message'
