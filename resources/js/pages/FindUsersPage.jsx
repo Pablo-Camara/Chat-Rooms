@@ -77,6 +77,17 @@ const FindUsersPage = () => {
                 &&
                 <Text style={{color: 'blue'}}>Searching for users..</Text>
             }
+
+            {
+                searchInput
+                &&
+                !isLoading
+                &&
+                searchResults.length == 0
+                &&
+                <Text style={{color: 'gray'}}>No users found  ..</Text>
+            }
+
             {
                 hasSearchError
                 &&
