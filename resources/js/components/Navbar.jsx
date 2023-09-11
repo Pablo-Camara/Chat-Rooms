@@ -52,7 +52,12 @@ export default function Navbar({ authenticated }) {
                 }
 
                 setNotifications(updatedNotifications);
-                setTotalNotifications(totalNotifications+1);
+
+                if (null === notificationTypeIndex) {
+                    setTotalNotifications(totalNotifications+1);
+                } else {
+                    setTotalNotifications(updatedNotifications.length);
+                }
             });
     }
 
