@@ -43,7 +43,6 @@ export default function Navbar({ authenticated }) {
             let channel = window.Echo.private('notifications.' + userId);
 
             const notificationSentCallback = (e) => {
-                console.log('NotificationSent', e);
                 const notificationReceived = e.notification;
                 let updatedNotifications = notifications.slice();
 
@@ -86,12 +85,8 @@ export default function Navbar({ authenticated }) {
             };
 
             const chatMessageViewedCallback = (e) => {
-                console.log('ChatMessageViewed', e);
-
                 const chatMsgReceived = e.chatRoomMessage;
                 let updatedNotifications = notifications.slice();
-
-                console.log(chatMsgReceived, updatedNotifications);
 
                 if (updatedNotifications.length > 0) {
                     let indexToDecrement = null;

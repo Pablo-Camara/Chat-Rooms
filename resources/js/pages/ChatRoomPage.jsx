@@ -93,7 +93,6 @@ const ChatRoomPage = () => {
             let channel = window.Echo.private('chatRoom.' + chatRoomId);
 
             const chatMessageSentCallback = (e) => {
-                console.log('ChatMessageSent', e);
                 let chatRoomMsg = e.chatRoomMessage;
                 let updatedChatMessages = chatMessages.slice();
                 updatedChatMessages.push({
