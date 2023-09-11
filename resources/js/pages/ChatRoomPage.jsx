@@ -213,7 +213,7 @@ const ChatRoomPage = () => {
                     {
                         chatMessages.map((chatMessage, index) => {
                             const createdAtDate = (new Date(chatMessage.dateSent)).toLocaleString();
-                            return <Container className={containerStyles.msgContainer}
+                            return <Container key={'cm_' + chatMessage.messageId} className={containerStyles.msgContainer}
                                 style={{
                                     marginRight: chatMessage.sender.id === user.id ? '0px' : 'auto',
                                     marginLeft: chatMessage.sender.id !== user.id ? '0px' : 'auto',
