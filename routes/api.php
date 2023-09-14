@@ -25,7 +25,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [ AuthController::class, 'logout' ]);
     Route::get('/notifications', [ NotificationsController::class, 'myNotifications' ]);
     Route::get('/friends', [ FriendshipsController::class, 'myFriends' ]);
+    Route::get('/add-friend/{userId}', [ FriendshipsController::class, 'addAsFriend' ]);
     Route::post('/find-users', [ UsersController::class, 'findUsers' ]);
+
 
     Route::get('/user/{userId}', [ UsersController::class, 'getUserProfile' ]);
 

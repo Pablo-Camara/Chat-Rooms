@@ -205,6 +205,19 @@ export default function Navbar({ authenticated }) {
                                                 }</b>
                                             </>
                                         }
+
+                                        {
+                                            notification.type === 'friend_request'
+                                            &&
+                                            <>
+                                                <b> {
+                                                    notification.sender.firstName
+                                                    + ' '
+                                                    + notification.sender.lastName
+                                                    + ' (' + notification.sender.username + ')'
+                                                }</b> as sent you a friend request
+                                            </>
+                                        }
                                 </div>
                             })
                         }

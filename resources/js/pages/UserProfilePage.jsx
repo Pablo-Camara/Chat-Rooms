@@ -50,8 +50,8 @@ const UserProfilePage = () => {
             method: 'GET',
             url: '/api/add-friend/' + userId
         }).then(response => {
-            const responseData = response.data;
-            setUserProfile(responseData.userProfile);
+            //const responseData = response.data;
+            //setUserProfile(responseData.userProfile);
 
         }).catch(error => {
             // Handle any errors that occur during the request.
