@@ -6,12 +6,26 @@ import { ProfilePageContext } from "../contexts/ProfilePageContext";
 import Text from "../components/Text";
 import UserName from "../components/UserName";
 import Button from "../components/Button";
+import { useLocation } from 'react-router-dom';
 
 const UserProfilePage = () => {
 
-    const { currentProfileUserId } = useContext(ProfilePageContext);
+    const { currentProfileUserId, setCurrentProfileUserId } = useContext(ProfilePageContext);
 
     const [userProfile, setUserProfile] = useState(null);
+    const [friendshipStatus, setFriendshipStatus] = useState('received_request');
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const userId = queryParams.get('userId');
+
+    if (
+        null == currentProfileUserId
+        &&
+        userId
+    ) {
+        setCurrentProfileUserId(userId);
+    }
 
     useEffect(() => {
         axios({
@@ -26,6 +40,28 @@ const UserProfilePage = () => {
             console.error('Error:', error);
         });
     }, [currentProfileUserId])
+
+    const addAsFriend = (userId) => {
+        axios({
+            method: 'GET',
+            url: '/api/add-friend/' + userId
+        }).then(response => {
+            const responseData = response.data;
+            setUserProfile(responseData.userProfile);
+
+        }).catch(error => {
+            // Handle any errors that occur during the request.
+            console.error('Error:', error);
+        });
+    };
+
+    const cancelAddAsFriend = (userId) => {
+
+    };
+
+    const acceptAsFriend = (userId) => {
+
+    };
 
     return <>
         <Navbar authenticated={true}/>
@@ -54,10 +90,41 @@ const UserProfilePage = () => {
                     marginTop: '4px'
                 }}>Joined {userProfile.joinedSince}</Text>
 
-                <Button style={{
-                        fontSize: '14px',
-                        marginTop: '14px'
-                    }}>Add friend</Button>
+                {
+                    friendshipStatus === null
+                    &&
+                    <Button onClick={() => {
+                        addAsFriend(userProfile.id);
+                    }} style={{
+                            fontSize: '14px',
+                            marginTop: '14px'
+                        }}>+ Add friend</Button>
+                }
+
+                {
+                    friendshipStatus === 'requested'
+                    &&
+                    <Button onClick={() => {
+                        cancelAddAsFriend(userProfile.id);
+                    }} style={{
+                            fontSize: '14px',
+                            marginTop: '14px',
+                            background: '#500101'
+                        }}>- Cancel friendship request</Button>
+                }
+
+                {
+                    friendshipStatus === 'received_request'
+                    &&
+                    <Button onClick={() => {
+                        acceptAsFriend(userProfile.id);
+                    }} style={{
+                            fontSize: '14px',
+                            marginTop: '14px',
+                            background: 'rgb(17 80 1)'
+                        }}>+ Accept friendship request</Button>
+                }
+
             </Container>
         }
 
