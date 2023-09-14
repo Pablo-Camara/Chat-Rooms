@@ -13,6 +13,9 @@ import MainMenuPage from './pages/MainMenuPage';
 import ChatRoomPage from './pages/ChatRoomPage';
 import FindUsersPage from './pages/FindUsersPage';
 import AuthMiddleware from './middleware/AuthMiddleware';
+import UserProfilePage from './pages/UserProfilePage';
+import ProfilePageContextProvider from './contexts/ProfilePageContext';
+
 
 const router = createBrowserRouter([
     {
@@ -40,13 +43,21 @@ const router = createBrowserRouter([
         element: <AuthMiddleware>
             <FindUsersPage />
         </AuthMiddleware>,
+    },
+    {
+        path: "user",
+        element: <AuthMiddleware>
+            <UserProfilePage />
+        </AuthMiddleware>,
     }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <AuthContextProvider>
         <ChatRoomContextProvider>
-            <RouterProvider router={router} />
+            <ProfilePageContextProvider>
+                <RouterProvider router={router} />
+            </ProfilePageContextProvider>
         </ChatRoomContextProvider>
     </AuthContextProvider>
 );

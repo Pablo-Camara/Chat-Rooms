@@ -6,6 +6,7 @@ import Text from "./Text";
 import styles from '../../css/modules/components/UserListItem.module.css';
 import UserName from "./UserName";
 import { ChatRoomContext } from "../contexts/ChatRoomContext";
+import { ProfilePageContext } from "../contexts/ProfilePageContext";
 export default function UserListItem({style, user}) {
     const navigate = useNavigate();
 
@@ -13,6 +14,8 @@ export default function UserListItem({style, user}) {
         setIsPrivateChat,
         setChattingWithUserId
     } = useContext(ChatRoomContext);
+
+    const { setCurrentProfileUserId } = useContext(ProfilePageContext);
 
     return <>
         <div className={styles.boxItem} style={{...style}}>
@@ -44,7 +47,10 @@ export default function UserListItem({style, user}) {
                     }}>Open chat</Button>
 
                 <Button
-                    onClick={() => alert('test')}
+                    onClick={() =>{
+                        setCurrentProfileUserId(user.id);
+                        navigate('/user?userId=' + user.id)
+                    }}
                     style={{
                         width: '94px',
                         display: 'inline-block',

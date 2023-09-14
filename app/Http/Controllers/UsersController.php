@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class UsersController extends Controller
 {
@@ -75,5 +76,25 @@ class UsersController extends Controller
 
         $results = $results->toArray();
         return response()->json($results);
+    }
+
+    public function getUserProfile($userId, Request $request) {
+        if (empty($userId)) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
+
+        $userProfile = User::select('id', 'username','firstName','lastName', 'created_at')
+            ->where('id', $userId)
+            ->first();
+
+        return response()->json([
+            'userProfile' => [
+                'id' => $userProfile->id,
+                'username' => $userProfile->username,
+                'firstName' => $userProfile->firstName,
+                'lastName' => $userProfile->lastName,
+                'joinedSince' => $userProfile->created_at->diffForHumans(),
+            ]
+        ]);
     }
 }

@@ -21,14 +21,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
 
     Route::post('/logout', [ AuthController::class, 'logout' ]);
     Route::get('/notifications', [ NotificationsController::class, 'myNotifications' ]);
     Route::get('/friends', [ FriendshipsController::class, 'myFriends' ]);
     Route::post('/find-users', [ UsersController::class, 'findUsers' ]);
+
+    Route::get('/user/{userId}', [ UsersController::class, 'getUserProfile' ]);
 
     Route::get('/chat/{userId}', [ ChatRoomsController::class, 'privateChat' ]);
     Route::post('/chat/{userId}/msg', [ ChatRoomMessagesController::class, 'sendPrivateChatMessage' ]);
