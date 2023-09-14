@@ -13,7 +13,9 @@ const UserProfilePage = () => {
     const { currentProfileUserId, setCurrentProfileUserId } = useContext(ProfilePageContext);
 
     const [userProfile, setUserProfile] = useState(null);
-    const [friendshipStatus, setFriendshipStatus] = useState('received_request');
+
+    // invalid || null || requested || received_request
+    const [friendshipStatus, setFriendshipStatus] = useState(null);
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -28,17 +30,19 @@ const UserProfilePage = () => {
     }
 
     useEffect(() => {
-        axios({
-            method: 'GET',
-            url: '/api/user/' + currentProfileUserId
-        }).then(response => {
-            const responseData = response.data;
-            setUserProfile(responseData.userProfile);
-
-        }).catch(error => {
-            // Handle any errors that occur during the request.
-            console.error('Error:', error);
-        });
+        if (currentProfileUserId) {
+            axios({
+                method: 'GET',
+                url: '/api/user/' + currentProfileUserId
+            }).then(response => {
+                const responseData = response.data;
+                setUserProfile(responseData.userProfile);
+                setFriendshipStatus(responseData.friendshipStatus);
+            }).catch(error => {
+                // Handle any errors that occur during the request.
+                console.error('Error:', error);
+            });
+        }
     }, [currentProfileUserId])
 
     const addAsFriend = (userId) => {

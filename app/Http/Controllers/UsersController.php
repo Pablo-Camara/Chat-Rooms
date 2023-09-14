@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Friendship;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -87,6 +88,25 @@ class UsersController extends Controller
             ->where('id', $userId)
             ->first();
 
+        $friendship = Friendship::where(function ($query) use ($userProfile) {
+            return $query->where('requester_id', $userProfile->id)
+                ->where('user_id', auth()->user()->id);
+        })->orWhere(function($query) use ($userProfile) {
+            return $query->where('requester_id', auth()->user()->id)
+                ->where('user_id', $userProfile->id);
+        })->first();
+
+        $friendshipStatus = $userProfile->id === auth()->user()->id ? 'invalid' : null;
+        if (!empty($friendship)) {
+            if ($friendship->requester_id === auth()->user()->id) {
+                $friendshipStatus = 'requested';
+            }
+
+            if ($friendship->requester_id === $userProfile->id) {
+                $friendshipStatus = 'received_request';
+            }
+        }
+
         return response()->json([
             'userProfile' => [
                 'id' => $userProfile->id,
@@ -94,7 +114,8 @@ class UsersController extends Controller
                 'firstName' => $userProfile->firstName,
                 'lastName' => $userProfile->lastName,
                 'joinedSince' => $userProfile->created_at->diffForHumans(),
-            ]
+            ],
+            'friendshipStatus' => $friendshipStatus
         ]);
     }
 }
