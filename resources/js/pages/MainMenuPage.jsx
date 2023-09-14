@@ -7,11 +7,14 @@ import Button from "../components/Button";
 import MyFriends from "../components/MyFriends";
 import linkBtnStyles from '../../css/modules/components/LinkButton.module.css';
 import Navbar from "../components/Navbar";
+import { ProfilePageContext } from "../contexts/ProfilePageContext";
 
 
 const MainMenuPage = () => {
-  const { logout } = useContext(AuthContext);
+  const { userId, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const { setCurrentProfileUserId } = useContext(ProfilePageContext);
 
   const logoutAttempt = () => {
     logout(() => {
@@ -32,6 +35,10 @@ const MainMenuPage = () => {
         }}>
             <LinkButton
                 className={`${linkBtnStyles.linkButton} ${linkBtnStyles.myAccountLink}`}
+                onClick={() => {
+                    setCurrentProfileUserId(userId);
+                    navigate('/user?userId=' + userId);
+                }}
             >
                 My Account / Profile
             </LinkButton>
