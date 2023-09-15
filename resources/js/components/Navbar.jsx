@@ -198,6 +198,8 @@ export default function Navbar({ authenticated }) {
             url: '/api/notifications/delete/' + notificationId
         })
         .then(response => {
+            //@TODO: use event instead of doing this after GET req/response
+            // for not leaving behind any tabs with wrong number of notifications
             let updatedNotifications = notifications.slice();
             let indexToRemove = null;
             updatedNotifications.forEach((notification, index) => {
