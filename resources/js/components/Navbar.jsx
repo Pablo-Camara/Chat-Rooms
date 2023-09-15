@@ -35,7 +35,6 @@ export default function Navbar({ authenticated }) {
             const responseData = response.data;
             setNotifications(responseData);
             setTotalNotifications(responseData.length);
-            setShowNotifications(responseData.length ? true : false);
         })
         .catch(error => {
             // Handle any errors that occur during the request.
