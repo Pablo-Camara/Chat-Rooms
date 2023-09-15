@@ -111,7 +111,22 @@ const UserProfilePage = () => {
             };
 
             const friendshipRequestAcceptedCallback = (e) => {
-                setFriendshipStatus('friends');
+                const friendship = e.friendship;
+                if (
+                    (
+                        friendship.user.id === currentProfileUserId
+                        &&
+                        friendship.requester.id === userId
+                    )
+                    ||
+                    (
+                        friendship.user.id === userId
+                        &&
+                        friendship.requester.id === currentProfileUserId
+                    )
+                ) {
+                    setFriendshipStatus('friends');
+                }
             };
 
             const friendshipRequestCancelledCallback = (e) => {
