@@ -29,6 +29,7 @@ class FriendshipRequestSent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
+            new PrivateChannel('notifications.' . $this->friendship->user_id),
             new PrivateChannel('notifications.' . $this->friendship->requester_id)
         ];
     }

@@ -93,8 +93,20 @@ const UserProfilePage = () => {
 
             const friendshipRequestSentCallback = (e) => {
                 const friendship = e.friendship;
-                if (friendship.user.id === currentProfileUserId) {
+                if (
+                    friendship.user.id === currentProfileUserId
+                    &&
+                    friendship.requester.id === userId
+                ) {
                     setFriendshipStatus('requested');
+                }
+
+                if (
+                    friendship.user.id === userId
+                    &&
+                    friendship.requester.id === currentProfileUserId
+                ) {
+                    setFriendshipStatus('received_request');
                 }
             };
 
