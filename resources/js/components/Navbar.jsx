@@ -5,6 +5,7 @@ import Container from './Container';
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { ChatRoomContext } from '../contexts/ChatRoomContext';
+import { ProfilePageContext } from '../contexts/ProfilePageContext';
 
 export default function Navbar({ authenticated }) {
     let finalClassName = authenticated ? navbarStyles.authenticatedNavbar : navbarStyles.unauthenticatedNavbar;
@@ -15,6 +16,8 @@ export default function Navbar({ authenticated }) {
         setIsPrivateChat,
         setChattingWithUserId
     } = useContext(ChatRoomContext);
+
+    const { setCurrentProfileUserId } = useContext(ProfilePageContext);
 
     const [totalNotifications, setTotalNotifications] = useState(0);
     const [notifications, setNotifications] = useState([]);
@@ -190,6 +193,11 @@ export default function Navbar({ authenticated }) {
                                             setChattingWithUserId(notification.from_user_id);
                                             setShowNotifications(false);
                                             navigate('/chat?userId=' + notification.from_user_id);
+                                        }
+
+                                        if (notification.type === 'friend_request') {
+                                            setCurrentProfileUserId(notification.from_user_id);
+                                            navigate('/user?userId=' + notification.from_user_id)
                                         }
                                     }}>
                                         {
