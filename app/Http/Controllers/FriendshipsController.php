@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\FriendshipRequestAccepted;
+use App\Events\FriendshipRequestCanceled;
 use App\Events\FriendshipRequestSent;
 use App\Events\NotificationSent;
 use App\Models\Friendship;
@@ -117,6 +118,37 @@ class FriendshipsController extends Controller
                 true,
                 $friendship
             );
+        }
+
+    }
+
+    public function cancelAddAsFriend($userId, Request $request) {
+        $authUser = $request->user();
+
+        $friendship = Friendship::where('requester_id', $authUser->id)
+            ->where('user_id', $userId)
+            ->first();
+
+        if (!empty($friendship)) {
+            $friendshipId = $friendship->id;
+            $requesterId = $friendship->requester_id;
+            $userId = $friendship->user_id;
+
+            $deleted = $friendship->delete();
+
+            if ($deleted) {
+                FriendshipRequestCanceled::dispatchIf(
+                    true,
+                    $requesterId,
+                    $userId
+                );
+
+                Notification::where('type', 'friend_request')
+                    ->where('notification_id', $friendshipId)
+                    ->where('from_user_id', $authUser->id)
+                    ->where('to_user_id', $userId)
+                    ->delete();
+            }
         }
 
     }

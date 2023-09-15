@@ -144,14 +144,38 @@ export default function Navbar({ authenticated }) {
                 }
             };
 
+            const friendshipRequestCanceledCallback = (e) => {
+                const requesterId = e.requester_id;
+                let updatedNotifications = notifications.slice();
+                let indexToRemove = null;
+                updatedNotifications.forEach((notification, index) => {
+                    if (
+                        notification.type === 'friend_request'
+                        &&
+                        notification.from_user_id === requesterId
+                    ) {
+                        indexToRemove = index;
+                        return;
+                    }
+                });
+
+                if (null !== indexToRemove) {
+                    updatedNotifications.splice(indexToRemove, 1);
+                    setNotifications(updatedNotifications);
+                    setTotalNotifications(updatedNotifications.length);
+                }
+            };
+
             channel.listen('NotificationSent', notificationSentCallback);
             channel.listen('ChatMessageViewed', chatMessageViewedCallback);
             channel.listen('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
+            channel.listen('FriendshipRequestCanceled', friendshipRequestCanceledCallback);
 
             return () => {
                 channel.stopListening('NotificationSent', notificationSentCallback);
                 channel.stopListening('ChatMessageViewed', chatMessageViewedCallback);
                 channel.stopListening('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
+                channel.stopListening('FriendshipRequestCanceled', friendshipRequestCanceledCallback);
             };
         }
     }, [userId, notifications]);

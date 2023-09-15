@@ -4,9 +4,11 @@ import { createContext, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const [userId, setUserId] = useState(
-        localStorage.getItem('UID')
-    );
+    let UID = localStorage.getItem('UID');
+    if (UID) {
+        UID = parseInt(UID);
+    }
+    const [userId, setUserId] = useState(UID);
 
     const login = async (
         username, password,

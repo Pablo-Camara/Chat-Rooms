@@ -63,7 +63,15 @@ const UserProfilePage = () => {
     };
 
     const cancelAddAsFriend = (userId) => {
-
+        axios({
+            method: 'GET',
+            url: '/api/cancel-add-friend/' + userId
+        }).then(response => {
+            // set friendshipStatus = friends
+        }).catch(error => {
+            // Handle any errors that occur during the request.
+            console.error('Error:', error);
+        });
     };
 
     const acceptAsFriend = (userId) => {
@@ -94,13 +102,25 @@ const UserProfilePage = () => {
                 setFriendshipStatus('friends');
             };
 
+            const friendshipRequestCancelledCallback = (e) => {
+                if (
+                    e.requester_id === userId
+                    &&
+                    e.user_id === currentProfileUserId
+                ) {
+                    setFriendshipStatus(null);
+                }
+            };
+
             channel.listen('FriendshipRequestSent', friendshipRequestSentCallback);
             channel.listen('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
+            channel.listen('FriendshipRequestCanceled', friendshipRequestCancelledCallback);
 
 
             return () => {
                 channel.stopListening('FriendshipRequestSent', friendshipRequestSentCallback);
                 channel.stopListening('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
+                channel.stopListening('FriendshipRequestCanceled', friendshipRequestCancelledCallback);
             };
         }
     }, [userId, currentProfileUserId]);
