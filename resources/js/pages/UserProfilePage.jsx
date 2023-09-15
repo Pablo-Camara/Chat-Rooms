@@ -14,7 +14,7 @@ const UserProfilePage = () => {
 
     const [userProfile, setUserProfile] = useState(null);
 
-    // invalid || null || requested || received_request
+    // invalid || null || requested || received_request || friends
     const [friendshipStatus, setFriendshipStatus] = useState(null);
 
     const location = useLocation();
