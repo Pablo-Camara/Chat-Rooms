@@ -35,6 +35,7 @@ export default function Navbar({ authenticated }) {
             const responseData = response.data;
             setNotifications(responseData);
             setTotalNotifications(responseData.length);
+            setShowNotifications(responseData.length ? true : false);
         })
         .catch(error => {
             // Handle any errors that occur during the request.
@@ -86,6 +87,7 @@ export default function Navbar({ authenticated }) {
                     setTotalNotifications(totalNotifications+1);
                 } else {
                     setTotalNotifications(updatedNotifications.length);
+                    setShowNotifications(updatedNotifications.length ? true : false);
                 }
             };
 
@@ -120,6 +122,7 @@ export default function Navbar({ authenticated }) {
 
                 setNotifications(updatedNotifications);
                 setTotalNotifications(updatedNotifications.length);
+                setShowNotifications(updatedNotifications.length ? true : false);
             };
 
             const friendshipRequestAcceptedCallback = (e) => {
@@ -141,6 +144,7 @@ export default function Navbar({ authenticated }) {
                     updatedNotifications.splice(indexToRemove, 1);
                     setNotifications(updatedNotifications);
                     setTotalNotifications(updatedNotifications.length);
+                    setShowNotifications(updatedNotifications.length ? true : false);
                 }
             };
 
@@ -163,6 +167,7 @@ export default function Navbar({ authenticated }) {
                     updatedNotifications.splice(indexToRemove, 1);
                     setNotifications(updatedNotifications);
                     setTotalNotifications(updatedNotifications.length);
+                    setShowNotifications(updatedNotifications.length ? true : false);
                 }
             };
 
