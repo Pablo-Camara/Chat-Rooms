@@ -104,9 +104,17 @@ const UserProfilePage = () => {
 
             const friendshipRequestCancelledCallback = (e) => {
                 if (
-                    e.requester_id === userId
-                    &&
-                    e.user_id === currentProfileUserId
+                    (
+                        e.requester_id === userId
+                        &&
+                        e.user_id === currentProfileUserId
+                    )
+                    ||
+                    (
+                        e.requester_id === currentProfileUserId
+                        &&
+                        e.user_id === userId
+                    )
                 ) {
                     setFriendshipStatus(null);
                 }
