@@ -44,7 +44,7 @@ const UserProfilePage = () => {
             &&
             profileUserId
         ) {
-            setCurrentProfileUserId(profileUserId);
+            setCurrentProfileUserId(parseInt(profileUserId));
         }
     }, [currentProfileUserId])
 
@@ -80,20 +80,30 @@ const UserProfilePage = () => {
 
 
     useEffect(() => {
-        if (userId) {
+        if (userId && currentProfileUserId) {
             let channel = window.Echo.private('notifications.' + userId);
+
+            const friendshipRequestSentCallback = (e) => {
+                const friendship = e.friendship;
+                if (friendship.user.id === currentProfileUserId) {
+                    setFriendshipStatus('requested');
+                }
+            };
 
             const friendshipRequestAcceptedCallback = (e) => {
                 setFriendshipStatus('friends');
             };
 
+            channel.listen('FriendshipRequestSent', friendshipRequestSentCallback);
             channel.listen('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
 
+
             return () => {
+                channel.stopListening('FriendshipRequestSent', friendshipRequestSentCallback);
                 channel.stopListening('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
             };
         }
-    }, [userId]);
+    }, [userId, currentProfileUserId]);
 
     return <>
         <Navbar authenticated={true}/>
