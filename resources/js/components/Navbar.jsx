@@ -86,7 +86,9 @@ export default function Navbar({ authenticated }) {
                     setTotalNotifications(totalNotifications+1);
                 } else {
                     setTotalNotifications(updatedNotifications.length);
-                    setShowNotifications(updatedNotifications.length ? true : false);
+                    if (updatedNotifications.length == 0) {
+                        setShowNotifications(false);
+                    }
                 }
             };
 
@@ -121,7 +123,9 @@ export default function Navbar({ authenticated }) {
 
                 setNotifications(updatedNotifications);
                 setTotalNotifications(updatedNotifications.length);
-                setShowNotifications(updatedNotifications.length ? true : false);
+                if (updatedNotifications.length == 0) {
+                    setShowNotifications(false);
+                }
             };
 
             const friendshipRequestAcceptedCallback = (e) => {
@@ -143,7 +147,9 @@ export default function Navbar({ authenticated }) {
                     updatedNotifications.splice(indexToRemove, 1);
                     setNotifications(updatedNotifications);
                     setTotalNotifications(updatedNotifications.length);
-                    setShowNotifications(updatedNotifications.length ? true : false);
+                    if (updatedNotifications.length == 0) {
+                        setShowNotifications(false);
+                    }
                 }
             };
 
@@ -166,7 +172,9 @@ export default function Navbar({ authenticated }) {
                     updatedNotifications.splice(indexToRemove, 1);
                     setNotifications(updatedNotifications);
                     setTotalNotifications(updatedNotifications.length);
-                    setShowNotifications(updatedNotifications.length ? true : false);
+                    if (updatedNotifications.length == 0) {
+                        setShowNotifications(false);
+                    }
                 }
             };
 
@@ -203,7 +211,9 @@ export default function Navbar({ authenticated }) {
                 updatedNotifications.splice(indexToRemove, 1);
                 setNotifications(updatedNotifications);
                 setTotalNotifications(updatedNotifications.length);
-                setShowNotifications(updatedNotifications.length ? true : false);
+                if (updatedNotifications.length == 0) {
+                    setShowNotifications(false);
+                }
             }
         })
         .catch(error => {
@@ -279,6 +289,7 @@ export default function Navbar({ authenticated }) {
 
                                         if (notification.type === 'friend_request') {
                                             setCurrentProfileUserId(notification.from_user_id);
+                                            setShowNotifications(false);
                                             navigate('/user?userId=' + notification.from_user_id)
                                         }
                                     }}>
