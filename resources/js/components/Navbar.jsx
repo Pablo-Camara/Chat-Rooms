@@ -6,6 +6,7 @@ import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { ChatRoomContext } from '../contexts/ChatRoomContext';
 import { ProfilePageContext } from '../contexts/ProfilePageContext';
+import Button from "./Button";
 
 export default function Navbar({ authenticated }) {
     let finalClassName = authenticated ? navbarStyles.authenticatedNavbar : navbarStyles.unauthenticatedNavbar;
@@ -154,6 +155,34 @@ export default function Navbar({ authenticated }) {
         }
     }, [userId, notifications]);
 
+    const deleteNotification = (notificationId) => {
+        axios({
+            method: 'GET',
+            url: '/api/notifications/delete/' + notificationId
+        })
+        .then(response => {
+            let updatedNotifications = notifications.slice();
+            let indexToRemove = null;
+            updatedNotifications.forEach((notification, index) => {
+                if (notification.id === notificationId) {
+                    indexToRemove = index;
+                    return;
+                }
+            });
+
+            if (null != indexToRemove) {
+                updatedNotifications.splice(indexToRemove, 1);
+                setNotifications(updatedNotifications);
+                setTotalNotifications(updatedNotifications.length);
+                setShowNotifications(updatedNotifications.length ? true : false);
+            }
+        })
+        .catch(error => {
+            // Handle any errors that occur during the request.
+            console.error('Error:', error);
+        });
+    };
+
     return <>
         <div className={finalClassName}>
             {
@@ -261,6 +290,22 @@ export default function Navbar({ authenticated }) {
                                                     + notification.sender.lastName
                                                     + ' (' + notification.sender.username + ')'
                                                 }</b> are now friends
+                                                <div style={{
+                                                    textAlign: 'center'
+                                                }}>
+                                                    <Button
+                                                        onClick={() => {
+                                                            deleteNotification(notification.id);
+                                                        }}
+                                                        style={{
+                                                            display: 'inline-block',
+                                                            fontSize: '12px',
+                                                            padding: '0px 14px',
+                                                            marginTop: '14px'
+                                                        }}>
+                                                            Ok
+                                                    </Button>
+                                                </div>
                                             </>
                                         }
                                 </div>

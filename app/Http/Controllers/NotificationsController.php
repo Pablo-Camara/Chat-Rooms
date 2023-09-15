@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class NotificationsController extends Controller
 {
@@ -11,6 +12,7 @@ class NotificationsController extends Controller
     public function myNotifications(Request $request) {
         $user = $request->user();
         $userNotifications = Notification::select('type','from_user_id')
+            ->selectRaw('MAX(id) as id')
             ->selectRaw('COUNT(*) as count')
             ->selectRaw('MAX(created_at) as created_at')
             ->where('to_user_id', $user->id)
@@ -20,5 +22,15 @@ class NotificationsController extends Controller
             ->get();
 
         return response()->json($userNotifications->toArray());
+    }
+
+    public function deleteNotification($notificationId, Request $request) {
+        $user = $request->user();
+        $notification = Notification::find($notificationId);
+        if ($notification->to_user_id !== $user->id) {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+
+        $notification->delete();
     }
 }
