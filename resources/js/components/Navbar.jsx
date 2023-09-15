@@ -128,7 +128,7 @@ export default function Navbar({ authenticated }) {
                 channel.stopListening('ChatMessageViewed', chatMessageViewedCallback);
             };
         }
-    }, [userId, notifications])
+    }, [userId, notifications]);
 
     return <>
         <div className={finalClassName}>
