@@ -78,6 +78,23 @@ const UserProfilePage = () => {
         });
     };
 
+
+    useEffect(() => {
+        if (userId) {
+            let channel = window.Echo.private('notifications.' + userId);
+
+            const friendshipRequestAcceptedCallback = (e) => {
+                setFriendshipStatus('friends');
+            };
+
+            channel.listen('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
+
+            return () => {
+                channel.stopListening('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
+            };
+        }
+    }, [userId]);
+
     return <>
         <Navbar authenticated={true}/>
         {
