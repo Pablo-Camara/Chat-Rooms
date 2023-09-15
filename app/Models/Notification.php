@@ -13,6 +13,8 @@ class Notification extends Model
 
     const TYPE_FRIEND_REQUEST = 'friend_request';
 
+    const TYPE_FRIEND_REQUEST_ACCEPTED = 'friend_request_accepted';
+
     public function sender()
     {
         return $this->hasOne(User::class, 'id', 'from_user_id');

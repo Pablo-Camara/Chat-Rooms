@@ -6,6 +6,7 @@ use App\Events\NotificationSent;
 use App\Models\Friendship;
 use App\Models\Notification;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -57,6 +58,51 @@ class FriendshipsController extends Controller
             NotificationSent::dispatchIf(
                 $friendRequestNotification->save(),
                 $friendRequestNotification
+            );
+        }
+
+    }
+
+    public function acceptAsFriend($userId, Request $request) {
+        $authUser = $request->user();
+
+        $friendship = Friendship::where('requester_id', $userId)
+            ->where('user_id', $authUser->id)
+            ->first();
+
+        $now = Carbon::now();
+        $friendship->accepted_at = $now;
+        $friendship->accepted_at_date = $now;
+
+        if ($friendship->save()) {
+            Notification::where('type','friend_request')
+                ->where('notification_id', $friendship->id)
+                ->where('from_user_id', $userId)
+                ->where('to_user_id', $authUser->id)
+                ->delete();
+
+            // notification to who requested the friendship
+            $acceptedNotification = new Notification();
+            $acceptedNotification->type = Notification::TYPE_FRIEND_REQUEST_ACCEPTED;
+            $acceptedNotification->notification_id = $friendship->id;
+            $acceptedNotification->from_user_id = $authUser->id;
+            $acceptedNotification->to_user_id = $friendship->requester_id;
+
+            NotificationSent::dispatchIf(
+                $acceptedNotification->save(),
+                $acceptedNotification
+            );
+
+            // notification to who accepted the friendship
+            $acceptedNotification = new Notification();
+            $acceptedNotification->type = Notification::TYPE_FRIEND_REQUEST_ACCEPTED;
+            $acceptedNotification->notification_id = $friendship->id;
+            $acceptedNotification->from_user_id = $friendship->requester_id;
+            $acceptedNotification->to_user_id = $authUser->id;
+
+            NotificationSent::dispatchIf(
+                $acceptedNotification->save(),
+                $acceptedNotification
             );
         }
 
