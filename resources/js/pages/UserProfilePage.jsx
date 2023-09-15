@@ -7,6 +7,7 @@ import Text from "../components/Text";
 import UserName from "../components/UserName";
 import Button from "../components/Button";
 import { useLocation } from 'react-router-dom';
+import { AuthContext } from "../contexts/AuthContext";
 
 const UserProfilePage = () => {
 
@@ -19,15 +20,9 @@ const UserProfilePage = () => {
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const userId = queryParams.get('userId');
+    const profileUserId = queryParams.get('userId');
 
-    if (
-        null == currentProfileUserId
-        &&
-        userId
-    ) {
-        setCurrentProfileUserId(userId);
-    }
+    const { userId } = useContext(AuthContext);
 
     useEffect(() => {
         if (currentProfileUserId) {
@@ -42,6 +37,14 @@ const UserProfilePage = () => {
                 // Handle any errors that occur during the request.
                 console.error('Error:', error);
             });
+        }
+
+        if (
+            null == currentProfileUserId
+            &&
+            profileUserId
+        ) {
+            setCurrentProfileUserId(profileUserId);
         }
     }, [currentProfileUserId])
 
@@ -64,6 +67,16 @@ const UserProfilePage = () => {
     };
 
     const acceptAsFriend = (userId) => {
+        axios({
+            method: 'GET',
+            url: '/api/accept-friend/' + userId
+        }).then(response => {
+            // set friendshipStatus = friends
+        }).catch(error => {
+            // Handle any errors that occur during the request.
+            console.error('Error:', error);
+        });
+    };
 
     };
 
