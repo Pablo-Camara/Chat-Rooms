@@ -105,6 +105,10 @@ class UsersController extends Controller
             if ($friendship->requester_id === $userProfile->id) {
                 $friendshipStatus = 'received_request';
             }
+
+            if (!empty($friendship->accepted_at_date)) {
+                $friendshipStatus = 'friends';
+            }
         }
 
         return response()->json([
