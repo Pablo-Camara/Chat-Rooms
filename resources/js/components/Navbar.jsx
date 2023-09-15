@@ -120,12 +120,36 @@ export default function Navbar({ authenticated }) {
                 setTotalNotifications(updatedNotifications.length);
             };
 
+            const friendshipRequestAcceptedCallback = (e) => {
+                const friendship = e.friendship;
+                let updatedNotifications = notifications.slice();
+                let indexToRemove = null;
+                updatedNotifications.forEach((notification, index) => {
+                    if (
+                        notification.type === 'friend_request'
+                        &&
+                        notification.from_user_id === friendship.requester.id
+                    ) {
+                        indexToRemove = index;
+                        return;
+                    }
+                });
+
+                if (null !== indexToRemove) {
+                    updatedNotifications.splice(indexToRemove, 1);
+                    setNotifications(updatedNotifications);
+                    setTotalNotifications(updatedNotifications.length);
+                }
+            };
+
             channel.listen('NotificationSent', notificationSentCallback);
             channel.listen('ChatMessageViewed', chatMessageViewedCallback);
+            channel.listen('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
 
             return () => {
                 channel.stopListening('NotificationSent', notificationSentCallback);
                 channel.stopListening('ChatMessageViewed', chatMessageViewedCallback);
+                channel.stopListening('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
             };
         }
     }, [userId, notifications]);
@@ -224,6 +248,19 @@ export default function Navbar({ authenticated }) {
                                                     + notification.sender.lastName
                                                     + ' (' + notification.sender.username + ')'
                                                 }</b> as sent you a friend request
+                                            </>
+                                        }
+
+                                        {
+                                            notification.type === 'friend_request_accepted'
+                                            &&
+                                            <>
+                                                You and <b> {
+                                                    notification.sender.firstName
+                                                    + ' '
+                                                    + notification.sender.lastName
+                                                    + ' (' + notification.sender.username + ')'
+                                                }</b> are now friends
                                             </>
                                         }
                                 </div>

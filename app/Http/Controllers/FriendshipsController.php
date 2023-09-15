@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FriendshipRequestAccepted;
 use App\Events\NotificationSent;
 use App\Models\Friendship;
 use App\Models\Notification;
@@ -103,6 +104,12 @@ class FriendshipsController extends Controller
             NotificationSent::dispatchIf(
                 $acceptedNotification->save(),
                 $acceptedNotification
+            );
+
+
+            FriendshipRequestAccepted::dispatchIf(
+                true,
+                $friendship
             );
         }
 
