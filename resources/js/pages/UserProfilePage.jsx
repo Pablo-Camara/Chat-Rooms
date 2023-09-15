@@ -78,8 +78,6 @@ const UserProfilePage = () => {
         });
     };
 
-    };
-
     return <>
         <Navbar authenticated={true}/>
         {
