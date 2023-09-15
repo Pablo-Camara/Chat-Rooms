@@ -65,6 +65,7 @@ export default function Navbar({ authenticated }) {
                 if (null === notificationTypeIndex) {
                     updatedNotifications.unshift({
                         count: 1,
+                        id: notificationReceived.id,
                         type: notificationReceived.type,
                         from_user_id: notificationReceived.from_user_id,
                         sender: notificationReceived.sender,
