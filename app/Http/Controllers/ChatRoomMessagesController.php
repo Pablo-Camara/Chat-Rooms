@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ChatMessageSent;
 use App\Events\NotificationSent;
+use App\Models\ChatRoomMessage;
 use App\Models\Notification;
 use App\Models\User;
 use App\Services\ChatRoomMessageService;
@@ -64,5 +65,19 @@ class ChatRoomMessagesController extends Controller
                 $destinationUser
             )
         );
+    }
+
+    public function markMessageAsRead($msgId, Request $request) {
+        $authUser = $request->user();
+        $chatRoomMsg = ChatRoomMessage::find($msgId);
+        if (
+            $chatRoomMsg
+            &&
+            $chatRoomMsg->receiver_id === $authUser->id
+        ) {
+            ChatRoomMessageService::markChatRoomMessagesAsRead([
+                $chatRoomMsg
+            ]);
+        }
     }
 }

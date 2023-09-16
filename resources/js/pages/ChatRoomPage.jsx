@@ -121,6 +121,14 @@ const ChatRoomPage = () => {
                 });
 
                 setChatMessages(updatedChatMessages);
+
+                if (chatRoomMsg.receiver.id == user.id) {
+                    // send request to read message and send message read event back to f.e
+                    axios({
+                        method: 'POST',
+                        url: '/api/chat/mark-msg-as-read/' + chatRoomMsg.id
+                    });
+                }
             };
 
             channel.listen('ChatMessageSent', chatMessageSentCallback);
@@ -128,7 +136,7 @@ const ChatRoomPage = () => {
                 channel.stopListening('ChatMessageSent', chatMessageSentCallback);
             };
         }
-    }, [chatRoomId, chatMessages]);
+    }, [chatRoomId, chatMessages, user]);
 
     const sendChatMessage = (message) => {
         axios({

@@ -36,6 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/chat/{userId}', [ ChatRoomsController::class, 'privateChat' ]);
     Route::post('/chat/{userId}/msg', [ ChatRoomMessagesController::class, 'sendPrivateChatMessage' ]);
+    Route::post('/chat/mark-msg-as-read/{msgId}', [ ChatRoomMessagesController::class, 'markMessageAsRead' ]);
 });
 
 Route::post('/login', [ AuthController::class, 'login' ]);
