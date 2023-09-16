@@ -28,8 +28,6 @@ window.Echo = new Echo({
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
     wsHost: import.meta.env.VITE_PUSHER_HOST, // Use wssHost instead of wsHost
     wsPort: import.meta.env.VITE_PUSHER_PORT, // Use wssPort instead of wsPort
-    wssHost: import.meta.env.VITE_PUSHER_HOST_WSS, // Use wssHost instead of wsHost
-    wssPort: import.meta.env.VITE_PUSHER_PORT_WSS, // Use wssPort instead of wsPort
     forceTLS: false, // Set forceTLS to true for secure connection
     encrypted: true, // Set encrypted to true for secure connection
     disableStats: true,
