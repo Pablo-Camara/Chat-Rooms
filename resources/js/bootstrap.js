@@ -27,11 +27,11 @@ window.Echo = new Echo({
     key: import.meta.env.VITE_PUSHER_APP_KEY,
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
     wsHost: import.meta.env.VITE_PUSHER_HOST, // Use wssHost instead of wsHost
-    wssHost: import.meta.env.VITE_PUSHER_HOST, // Use wssHost instead of wsHost
-    wssPort: import.meta.env.VITE_PUSHER_PORT, // Use wssPort instead of wsPort
     wsPort: import.meta.env.VITE_PUSHER_PORT, // Use wssPort instead of wsPort
+    wssHost: import.meta.env.VITE_PUSHER_HOST_WSS, // Use wssHost instead of wsHost
+    wssPort: import.meta.env.VITE_PUSHER_PORT_WSS, // Use wssPort instead of wsPort
     forceTLS: false, // Set forceTLS to true for secure connection
-    encrypted: false, // Set encrypted to true for secure connection
+    encrypted: true, // Set encrypted to true for secure connection
     disableStats: true,
     enabledTransports: ['ws', 'wss'], // Specify wss as the only transport
 });
