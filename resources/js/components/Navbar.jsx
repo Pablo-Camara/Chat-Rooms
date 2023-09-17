@@ -26,21 +26,23 @@ export default function Navbar({ authenticated }) {
     const [showNotifications, setShowNotifications] = useState(false);
 
     useEffect(() => {
-        // fetch notifications
-        axios({
-            method: 'GET',
-            url: '/api/notifications'
-        })
-        .then(response => {
-            const responseData = response.data;
-            setNotifications(responseData);
-            setTotalNotifications(responseData.length);
-        })
-        .catch(error => {
-            // Handle any errors that occur during the request.
-            console.error('Error:', error);
-        });
-    }, []);
+        if (userId) {
+            // fetch notifications
+            axios({
+                method: 'GET',
+                url: '/api/notifications'
+            })
+            .then(response => {
+                const responseData = response.data;
+                setNotifications(responseData);
+                setTotalNotifications(responseData.length);
+            })
+            .catch(error => {
+                // Handle any errors that occur during the request.
+                console.error('Error:', error);
+            });
+        }
+    }, [userId]);
 
     useEffect(() => {
         if (userId) {
