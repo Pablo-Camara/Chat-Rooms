@@ -180,12 +180,35 @@ export default function Navbar({ authenticated }) {
                 }
             };
 
+            const notificationDeletedCallback = (e) => {
+                const notificationId = e.notification.id;
+                let updatedNotifications = notifications.slice();
+                let indexToRemove = null;
+                updatedNotifications.forEach((notification, index) => {
+                    if (notification.id === notificationId) {
+                        indexToRemove = index;
+                        return;
+                    }
+                });
+
+                if (null != indexToRemove) {
+                    updatedNotifications.splice(indexToRemove, 1);
+                    setNotifications(updatedNotifications);
+                    setTotalNotifications(updatedNotifications.length);
+                    if (updatedNotifications.length == 0) {
+                        setShowNotifications(false);
+                    }
+                }
+            };
+
             channel.listen('NotificationSent', notificationSentCallback);
+            channel.listen('NotificationDeleted', notificationDeletedCallback);
             channel.listen('ChatMessageViewed', chatMessageViewedCallback);
             channel.listen('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
             channel.listen('FriendshipRequestCanceled', friendshipRequestCanceledCallback);
 
             return () => {
+                channel.stopListening('NotificationDeleted', notificationDeletedCallback);
                 channel.stopListening('NotificationSent', notificationSentCallback);
                 channel.stopListening('ChatMessageViewed', chatMessageViewedCallback);
                 channel.stopListening('FriendshipRequestAccepted', friendshipRequestAcceptedCallback);
@@ -200,25 +223,7 @@ export default function Navbar({ authenticated }) {
             url: '/api/notifications/delete/' + notificationId
         })
         .then(response => {
-            //@TODO: use event instead of doing this after GET req/response
-            // for not leaving behind any tabs with wrong number of notifications
-            let updatedNotifications = notifications.slice();
-            let indexToRemove = null;
-            updatedNotifications.forEach((notification, index) => {
-                if (notification.id === notificationId) {
-                    indexToRemove = index;
-                    return;
-                }
-            });
-
-            if (null != indexToRemove) {
-                updatedNotifications.splice(indexToRemove, 1);
-                setNotifications(updatedNotifications);
-                setTotalNotifications(updatedNotifications.length);
-                if (updatedNotifications.length == 0) {
-                    setShowNotifications(false);
-                }
-            }
+            // nothingness
         })
         .catch(error => {
             // Handle any errors that occur during the request.

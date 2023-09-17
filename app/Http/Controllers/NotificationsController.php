@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationDeleted;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -27,10 +28,21 @@ class NotificationsController extends Controller
     public function deleteNotification($notificationId, Request $request) {
         $user = $request->user();
         $notification = Notification::find($notificationId);
-        if ($notification->to_user_id !== $user->id) {
-            abort(Response::HTTP_FORBIDDEN);
+
+        if (empty($notification)) {
+            abort(Response::HTTP_NOT_FOUND);
+            return;
         }
 
+        if ($notification->to_user_id !== $user->id) {
+            abort(Response::HTTP_FORBIDDEN);
+            return;
+        }
+
+        NotificationDeleted::dispatchIf(
+            true,
+            $notification
+        );
         $notification->delete();
     }
 }
