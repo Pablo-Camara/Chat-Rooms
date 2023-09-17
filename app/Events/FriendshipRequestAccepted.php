@@ -34,4 +34,15 @@ class FriendshipRequestAccepted implements ShouldBroadcast
         ];
     }
 
+    public function broadcastWith()
+    {
+        return [
+            'friendship' => array_merge(
+                $this->friendship->toArray(),
+                [
+                    'friendsSince' => 'few seconds ago',
+                ]
+            )
+        ];
+    }
 }

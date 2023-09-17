@@ -9,6 +9,15 @@ class Friendship extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'accepted_at' => 'datetime',
+    ];
+
     public function requester()
     {
         return $this->hasOne(User::class, 'id', 'requester_id');
@@ -17,6 +26,13 @@ class Friendship extends Model
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function getFriendsSinceAttribute() {
+        if (!empty($this->accepted_at)) {
+            return $this->accepted_at->diffForHumans();
+        }
+        return null;
     }
 
     public function toArray()

@@ -119,7 +119,10 @@ class UsersController extends Controller
                 'lastName' => $userProfile->lastName,
                 'joinedSince' => $userProfile->created_at->diffForHumans(),
             ],
-            'friendshipStatus' => $friendshipStatus
+            'friendship' => [
+                'status' => $friendshipStatus,
+                'friendsSince' => $friendship ? $friendship->friends_since : null
+            ]
         ]);
     }
 }

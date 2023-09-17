@@ -16,7 +16,7 @@ const UserProfilePage = () => {
     const [userProfile, setUserProfile] = useState(null);
 
     // invalid || null || requested || received_request || friends
-    const [friendshipStatus, setFriendshipStatus] = useState(null);
+    const [friendshipObj, setFriendshipObj] = useState(null);
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -32,7 +32,7 @@ const UserProfilePage = () => {
             }).then(response => {
                 const responseData = response.data;
                 setUserProfile(responseData.userProfile);
-                setFriendshipStatus(responseData.friendshipStatus);
+                setFriendshipObj(responseData.friendship);
             }).catch(error => {
                 // Handle any errors that occur during the request.
                 console.error('Error:', error);
@@ -98,7 +98,10 @@ const UserProfilePage = () => {
                     &&
                     friendship.requester.id === userId
                 ) {
-                    setFriendshipStatus('requested');
+                    setFriendshipObj({
+                        ...friendshipObj,
+                        status: 'requested'
+                    });
                 }
 
                 if (
@@ -106,12 +109,17 @@ const UserProfilePage = () => {
                     &&
                     friendship.requester.id === currentProfileUserId
                 ) {
-                    setFriendshipStatus('received_request');
+                    setFriendshipObj({
+                        ...friendshipObj,
+                        status: 'received_request'
+                    });
                 }
             };
 
             const friendshipRequestAcceptedCallback = (e) => {
                 const friendship = e.friendship;
+                console.log('e', e);
+                console.log('friendship', friendship);
                 if (
                     (
                         friendship.user.id === currentProfileUserId
@@ -125,7 +133,14 @@ const UserProfilePage = () => {
                         friendship.requester.id === currentProfileUserId
                     )
                 ) {
-                    setFriendshipStatus('friends');
+                    console.log('friendship', friendship);
+                    console.log('friendship1', friendshipObj);
+                    setFriendshipObj({
+                        ...friendshipObj,
+                        status: 'friends',
+                        friendsSince: friendship.friendsSince
+                    });
+                    console.log('friendship2', friendshipObj);
                 }
             };
 
@@ -143,7 +158,10 @@ const UserProfilePage = () => {
                         e.user_id === userId
                     )
                 ) {
-                    setFriendshipStatus(null);
+                    setFriendshipObj({
+                        ...friendshipObj,
+                        status: null
+                    });
                 }
             };
 
@@ -158,7 +176,7 @@ const UserProfilePage = () => {
                 channel.stopListening('FriendshipRequestCanceled', friendshipRequestCancelledCallback);
             };
         }
-    }, [userId, currentProfileUserId]);
+    }, [userId, currentProfileUserId, friendshipObj]);
 
     return <>
         <Navbar authenticated={true}/>
@@ -188,7 +206,7 @@ const UserProfilePage = () => {
                 }}>Joined {userProfile.joinedSince}</Text>
 
                 {
-                    friendshipStatus === null
+                    friendshipObj.status === null
                     &&
                     <Button onClick={() => {
                         addAsFriend(userProfile.id);
@@ -199,7 +217,7 @@ const UserProfilePage = () => {
                 }
 
                 {
-                    friendshipStatus === 'requested'
+                    friendshipObj.status === 'requested'
                     &&
                     <Button onClick={() => {
                         cancelAddAsFriend(userProfile.id);
@@ -211,7 +229,7 @@ const UserProfilePage = () => {
                 }
 
                 {
-                    friendshipStatus === 'received_request'
+                    friendshipObj.status === 'received_request'
                     &&
                     <Button onClick={() => {
                         acceptAsFriend(userProfile.id);
@@ -220,6 +238,22 @@ const UserProfilePage = () => {
                             marginTop: '14px',
                             background: 'rgb(17 80 1)'
                         }}>+ Accept friendship request</Button>
+                }
+
+                {
+                    friendshipObj.status === 'friends'
+                    &&
+                    friendshipObj.friendsSince
+                    &&
+                    <>
+                        <Text style={{
+                            color: 'gray',
+                            fontSize: '12px',
+                            marginTop: '4px'
+                        }}>
+                            Friends since {friendshipObj.friendsSince}
+                        </Text>
+                    </>
                 }
 
             </Container>
