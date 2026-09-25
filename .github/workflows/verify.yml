@@ -1,0 +1,40 @@
+name: Verify chat
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Match checkout ownership
+        run: |
+          echo "LOCAL_UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "LOCAL_GID=$(id -g)" >> "$GITHUB_ENV"
+      - run: scripts/setup.sh
+      - run: docker compose run --rm app php artisan test --compact
+      - run: docker compose run --rm app vendor/bin/pint --test
+      - run: docker compose run --rm node npm test
+      - run: docker compose run --rm app composer audit
+      - run: npm audit --omit=dev
+      - name: Verify real private-channel delivery
+        run: |
+          docker compose run --rm app php artisan db:seed --class=DemoSeeder
+          npm ci
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://localhost:8088/ > /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/check-realtime.mjs
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs --tail 100
+      - name: Stop local stack
+        if: always()
+        run: docker compose down

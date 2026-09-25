@@ -1,43 +1,23 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatRoomMessagesController;
 use App\Http\Controllers\ChatRoomsController;
 use App\Http\Controllers\FriendshipsController;
-use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-Route::middleware(['auth:sanctum'])->group(function () {
-
-    Route::post('/logout', [ AuthController::class, 'logout' ]);
-    Route::get('/notifications', [ NotificationsController::class, 'myNotifications' ]);
-    Route::get('/notifications/delete/{notificationId}', [ NotificationsController::class, 'deleteNotification' ]);
-    Route::get('/friends', [ FriendshipsController::class, 'myFriends' ]);
-    Route::get('/cancel-add-friend/{userId}', [ FriendshipsController::class, 'cancelAddAsFriend' ]);
-    Route::get('/add-friend/{userId}', [ FriendshipsController::class, 'addAsFriend' ]);
-    Route::get('/accept-friend/{userId}', [ FriendshipsController::class, 'acceptAsFriend' ]);
-    Route::post('/find-users', [ UsersController::class, 'findUsers' ]);
-
-
-    Route::get('/user/{userId}', [ UsersController::class, 'getUserProfile' ]);
-
-    Route::get('/chat/{userId}', [ ChatRoomsController::class, 'privateChat' ]);
-    Route::post('/chat/{userId}/msg', [ ChatRoomMessagesController::class, 'sendPrivateChatMessage' ]);
-    Route::post('/chat/mark-msg-as-read/{msgId}', [ ChatRoomMessagesController::class, 'markMessageAsRead' ]);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me', fn (Request $request) => new UserResource($request->user()));
+    Route::get('/users', [UsersController::class, 'index']);
+    Route::get('/friendships', [FriendshipsController::class, 'index']);
+    Route::post('/friendships/{user}', [FriendshipsController::class, 'store'])->middleware('throttle:20,1');
+    Route::put('/friendships/{friendship}', [FriendshipsController::class, 'accept']);
+    Route::delete('/friendships/{friendship}', [FriendshipsController::class, 'destroy']);
+    Route::get('/conversations', [ChatRoomsController::class, 'index']);
+    Route::post('/conversations', [ChatRoomsController::class, 'store']);
+    Route::get('/conversations/{room}/messages', [ChatRoomMessagesController::class, 'index']);
+    Route::post('/conversations/{room}/messages', [ChatRoomMessagesController::class, 'store'])->middleware('throttle:30,1');
+    Route::post('/conversations/{room}/read', [ChatRoomMessagesController::class, 'read']);
 });
-
-Route::post('/login', [ AuthController::class, 'login' ]);
-Route::post('/register', [ AuthController::class, 'register' ]);

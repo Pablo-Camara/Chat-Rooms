@@ -1,16 +1,10 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-Route::view('/{path?}', 'welcome');
+// Browser authentication uses an HttpOnly session cookie and Laravel's CSRF middleware.
+Route::post('/api/login', [AuthController::class, 'login'])->middleware('throttle:login');
+Route::post('/api/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+Route::post('/api/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::view('/{path?}', 'welcome')->where('path', '(?!api/).*')->name('login');

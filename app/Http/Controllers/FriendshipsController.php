@@ -2,154 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\FriendshipRequestAccepted;
-use App\Events\FriendshipRequestCanceled;
-use App\Events\FriendshipRequestSent;
-use App\Events\NotificationSent;
+use App\Http\Resources\UserResource;
 use App\Models\Friendship;
-use App\Models\Notification;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class FriendshipsController extends Controller
 {
-    //
-    public function myFriends(Request $request) //@TODO: paginate, relevant ordering
+    public function index(Request $request)
     {
-        $user = $request->user();
-        $friends = Friendship::where(function ($query) use ($user) {
-            $query->where('requester_id', $user->id)
-                ->orWhere('user_id', $user->id);
-        })
-            ->whereNotNull('accepted_at_date')
-            ->get();
+        $id = $request->user()->id;
 
-        $result = [];
-        foreach ($friends as $friend) {
-            $result[] = array_merge(
-                [
-                    'requestor_id' => $user->id
-                ],
-                $friend->toArray()
-            );
-        }
-
-        return response()->json($result);
+        return Friendship::where(fn ($query) => $query->where('requester_id', $id)->orWhere('user_id', $id))
+            ->with(['requester', 'user'])->orderByDesc('id')->paginate(30)
+            ->through(fn ($friendship) => [
+                'id' => $friendship->id,
+                'person' => new UserResource($friendship->requester_id === $id ? $friendship->user : $friendship->requester),
+                'status' => $friendship->accepted_at ? 'accepted' : ($friendship->requester_id === $id ? 'sent' : 'received'),
+            ]);
     }
 
-    public function addAsFriend($userId, Request $request) {
-        $authUser = $request->user();
-        $subjectUser = User::find($userId);
-        if (empty($subjectUser)) {
-            abort(Response::HTTP_NOT_FOUND);
-        }
+    public function store(Request $request, User $user)
+    {
+        $sender = $request->user();
+        abort_if($sender->is($user), 422, 'You cannot send yourself a contact request.');
+        $friendship = Friendship::firstOrCreate(
+            ['pair_key' => min($sender->id, $user->id).':'.max($sender->id, $user->id)],
+            ['requester_id' => $sender->id, 'user_id' => $user->id],
+        );
 
-        $friendship = new Friendship();
-        $friendship->requester_id = $authUser->id;
-        $friendship->user_id = $subjectUser->id;
-        $friendshipRequested = $friendship->save();
-
-        if ($friendshipRequested) {
-            $friendRequestNotification = new Notification();
-            $friendRequestNotification->type = Notification::TYPE_FRIEND_REQUEST;
-            $friendRequestNotification->notification_id = $friendship->id;
-            $friendRequestNotification->from_user_id = $authUser->id;
-            $friendRequestNotification->to_user_id = $subjectUser->id;
-
-            NotificationSent::dispatchIf(
-                $friendRequestNotification->save(),
-                $friendRequestNotification
-            );
-
-            FriendshipRequestSent::dispatchIf(
-                true,
-                $friendship
-            );
-        }
-
+        return response()->json(['id' => $friendship->id], $friendship->wasRecentlyCreated ? 201 : 200);
     }
 
-    public function acceptAsFriend($userId, Request $request) {
-        $authUser = $request->user();
-
-        $friendship = Friendship::where('requester_id', $userId)
-            ->where('user_id', $authUser->id)
-            ->first();
-
-        $now = Carbon::now();
-        $friendship->accepted_at = $now;
-        $friendship->accepted_at_date = $now;
-
-        if ($friendship->save()) {
-            Notification::where('type','friend_request')
-                ->where('notification_id', $friendship->id)
-                ->where('from_user_id', $userId)
-                ->where('to_user_id', $authUser->id)
-                ->delete();
-
-            // notification to who requested the friendship
-            $acceptedNotification = new Notification();
-            $acceptedNotification->type = Notification::TYPE_FRIEND_REQUEST_ACCEPTED;
-            $acceptedNotification->notification_id = $friendship->id;
-            $acceptedNotification->from_user_id = $authUser->id;
-            $acceptedNotification->to_user_id = $friendship->requester_id;
-
-            NotificationSent::dispatchIf(
-                $acceptedNotification->save(),
-                $acceptedNotification
-            );
-
-            // notification to who accepted the friendship
-            $acceptedNotification = new Notification();
-            $acceptedNotification->type = Notification::TYPE_FRIEND_REQUEST_ACCEPTED;
-            $acceptedNotification->notification_id = $friendship->id;
-            $acceptedNotification->from_user_id = $friendship->requester_id;
-            $acceptedNotification->to_user_id = $authUser->id;
-
-            NotificationSent::dispatchIf(
-                $acceptedNotification->save(),
-                $acceptedNotification
-            );
-
-
-            FriendshipRequestAccepted::dispatchIf(
-                true,
-                $friendship
-            );
+    public function accept(Request $request, Friendship $friendship)
+    {
+        abort_unless($friendship->user_id === $request->user()->id, 403);
+        if (! $friendship->accepted_at) {
+            $friendship->update(['accepted_at' => now(), 'accepted_at_date' => today()]);
         }
 
+        return response()->noContent();
     }
 
-    public function cancelAddAsFriend($userId, Request $request) {
-        $authUser = $request->user();
+    public function destroy(Request $request, Friendship $friendship)
+    {
+        abort_unless(in_array($request->user()->id, [$friendship->requester_id, $friendship->user_id], true), 403);
+        $friendship->delete();
 
-        $friendship = Friendship::where('requester_id', $authUser->id)
-            ->where('user_id', $userId)
-            ->first();
-
-        if (!empty($friendship)) {
-            $friendshipId = $friendship->id;
-            $requesterId = $friendship->requester_id;
-            $userId = $friendship->user_id;
-
-            $deleted = $friendship->delete();
-
-            if ($deleted) {
-                FriendshipRequestCanceled::dispatchIf(
-                    true,
-                    $requesterId,
-                    $userId
-                );
-
-                Notification::where('type', 'friend_request')
-                    ->where('notification_id', $friendshipId)
-                    ->where('from_user_id', $authUser->id)
-                    ->where('to_user_id', $userId)
-                    ->delete();
-            }
-        }
-
+        return response()->noContent();
     }
 }
