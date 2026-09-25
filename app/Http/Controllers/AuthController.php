@@ -2,136 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    //
-    public function login (Request $request) {
-        $username = $request->input('username');
-        $password = $request->input('password');
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'username' => ['required', 'string', 'max:40'],
+            'password' => ['required', 'string', 'max:255'],
+        ]);
 
-        $user = User::where('username','=',$username)->first();
-
-        if (
-            !empty($user)
-            &&
-            Hash::check($password, $user->password)
-        ) {
-            Auth::loginUsingId($user->id);
-            $user = $request->user();
-            $authToken = null;
-            foreach($user->tokens as $token) {
-                if ($token->name === 'auth'){
-                    $authToken = $token;
-                    break;
-                }
-            }
-            if (is_null($authToken)) {
-                $authToken = $user->createToken('auth');
-            }
-
-            return response()->json([
-                'token' => $authToken->plainTextToken,
-                'userId' => $user->id
-            ]);
+        if (! Auth::attempt($credentials)) {
+            throw ValidationException::withMessages(['username' => 'The username or password is incorrect.']);
         }
 
-        abort(Response::HTTP_UNAUTHORIZED);
+        // Rotate the session identifier after authentication to prevent fixation.
+        $request->session()->regenerate();
+
+        return new UserResource($request->user());
     }
 
-    public function logout(Request $request) {
-        $user = $request->user();
-        $tokenNameToDelete = 'auth';
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'firstName' => ['required', 'string', 'max:80'],
+            'lastName' => ['required', 'string', 'max:80'],
+            'username' => ['required', 'string', 'min:3', 'max:40', 'regex:/^[a-zA-Z0-9_.-]+$/', 'unique:users'],
+            'password' => ['required', 'string', 'confirmed', 'max:255', Password::min(12)],
+        ]);
 
-        $user->tokens->each(function ($token) use ($tokenNameToDelete) {
-            if ($token->name === $tokenNameToDelete) {
-                $token->delete();
-            }
-        });
+        $user = User::create($data);
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return (new UserResource($user))->response()->setStatusCode(201);
     }
 
-    public function register(Request $request) {
-        $firstName = $request->input('firstName');
-        $lastName = $request->input('lastName');
-        $username = $request->input('username');
-        $password = $request->input('password');
-        $passwordConfirmation = $request->input('passwordConfirmation');
+    public function logout(Request $request)
+    {
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        if ($passwordConfirmation !== $password) {
-            return response()->json([
-                'errors' => [
-                    [
-                        'text' => 'Password confirmation does not match'
-                    ]
-                ]
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Define the validation rules for your variables
-        $rules = [
-            'firstName' => 'required|regex:/^\S+$/|max:255',
-            'lastName' => 'required|regex:/^\S+$/|max:255',
-            'username' => 'required|regex:/^\S+$/|max:255|unique:users',
-            'password' => 'required|max:255',
-            // Add more rules for other variables here
-        ];
-
-        // Create a new Validator instance
-        $validator = Validator::make([
-            'firstName' => $firstName,
-            'lastName' => $lastName,
-            'username' => $username,
-            'password' => $password,
-        ], $rules, [
-            'firstName.regex' => 'The :attribute field may not contain spaces',
-            'lastName.regex' => 'The :attribute field may not contain spaces',
-            'username.regex' => 'The :attribute field may not contain spaces',
-        ]);
-
-        // Check if validation fails
-        if ($validator->fails()) {
-            // Validation failed; return validation errors as a response
-            $formattedErrors = [];
-
-            // Loop through each field and its error messages
-            foreach ($validator->errors()->messages() as $field => $errorMessages) {
-                foreach ($errorMessages as $errorMessage) {
-                    // Build the desired structure for each error
-                    $formattedErrors[] = [
-                        "text" => $errorMessage
-                    ];
-                }
-            }
-            return response()->json(
-                [
-                    'errors' => $formattedErrors
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-
-        // Create new user
-        $newUser = new User([
-            'firstName' => $firstName,
-            'lastName' => $lastName,
-            'username' => $username,
-            'password' => Hash::make($password)
-        ]);
-        $newUser->save();
-        Auth::loginUsingId($newUser->id);
-        $authToken = $request->user()->createToken('auth');
-
-        return response()->json([
-            'token' => $authToken->plainTextToken,
-            'userId' => $newUser->id
-        ]);
-
+        return response()->noContent();
     }
 }

@@ -2,55 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Friendship extends Model
 {
-    use HasFactory;
+    protected $fillable = ['pair_key', 'requester_id', 'user_id', 'accepted_at', 'accepted_at_date'];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'accepted_at' => 'datetime',
-    ];
+    protected $casts = ['accepted_at' => 'datetime', 'requester_id' => 'integer', 'user_id' => 'integer'];
 
-    public function requester()
+    public function requester(): BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'requester_id');
+        return $this->belongsTo(User::class, 'requester_id');
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
-
-    public function getFriendsSinceAttribute() {
-        if (!empty($this->accepted_at)) {
-            return $this->accepted_at->diffForHumans();
-        }
-        return null;
-    }
-
-    public function toArray()
-    {
-        return [
-            'friendship_id' => $this->id,
-            'requester' => [
-                'id' => $this->requester->id,
-                'username' => $this->requester->username,
-                'firstName' => $this->requester->firstName,
-                'lastName' => $this->requester->lastName,
-            ],
-            'user' => [
-                'id' => $this->user->id,
-                'username' => $this->user->username,
-                'firstName' => $this->user->firstName,
-                'lastName' => $this->user->lastName,
-            ],
-        ];
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

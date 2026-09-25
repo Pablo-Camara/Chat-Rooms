@@ -1,0 +1,45 @@
+name: chat-rooms
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    ports:
+      - "127.0.0.1:${APP_PORT:-8088}:8000"
+    volumes:
+      - .:/app
+    environment:
+      PHP_CLI_SERVER_WORKERS: 4
+      COMPOSER_HOME: /tmp/composer
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8000/') === false ? 1 : 0);"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    init: true
+  reverb:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    command: ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
+    ports:
+      - "127.0.0.1:${REVERB_PUBLIC_PORT:-8089}:8080"
+    volumes:
+      - .:/app
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', 8080) === false ? 1 : 0);"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    init: true
+  node:
+    image: node:24-alpine
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      NPM_CONFIG_CACHE: /tmp/npm-cache
+    profiles: [tools]
